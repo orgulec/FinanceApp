@@ -1,0 +1,46 @@
+#databaseChangeLog:
+#  - changeSet:
+#      id: 01_create_table_user_model
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/01_create_table_user_model.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
+#  - changeSet:
+#      id: 02_create_table_data
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/01_create_table_data.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
+#  - changeSet:
+#      id: 03_create_table_account
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/01_create_table_account.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
+#  - changeSet:
+#      id: 04_insert_into_deposit
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/04_insert_into_deposit.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
+#  - changeSet:
+#      id: 05_create_table_transactions
+#      author: postgres
+#      changes:
+#        - sqlFile:
+#            path: scripts/05_create_table_transactions.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
