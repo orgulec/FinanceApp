@@ -4,6 +4,7 @@ import app.financeapp.dto.AccountNewDto;
 import app.financeapp.dto.AccountRequestDto;
 import app.financeapp.dto.LoginDto;
 import app.financeapp.model.AccountModel;
+import app.financeapp.model.UserModel;
 import app.financeapp.repository.AccountRepository;
 import app.financeapp.utils.mappers.AccountMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -64,7 +65,18 @@ public class AccountService {
     }
 
     public AccountModel addNewAccountToUser(AccountNewDto newDto) {
-        userService
+        UserModel user = userService.getUserById(newDto.getOwner().getId());
+        AccountModel newAccount = new AccountModel();
 
+        newAccount.setOwner(user);
+        newAccount.setType(newDto.getType());
+        newAccount.setAccountNumber(generateAccountNumber());
+        newAccount.setBalance(BigDecimal.ZERO);
+        return newAccount;
+    }
+
+    private String generateAccountNumber() {
+        //TODO
+        return "12363214523678954400021458";
     }
 }

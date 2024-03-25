@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    private UserModel getUserById(Long id){
+    public UserModel getUserById(Long id){
         Optional<UserModel> user = userRepository.findById(id);
         if(user.isEmpty()){
             throw new EntityNotFoundException("User not found.");
