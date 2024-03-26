@@ -25,16 +25,17 @@ public class AccountModel {
     @Column(name = "NUMBER", length = 26, nullable = false)
     private String accountNumber;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "owner", referencedColumnName = "id")
     private UserModel owner;
 
     @Column(name = "TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountType type;
 
-    @Column(name = "LOGIN", unique = true, length = 128, nullable = false)
+    @Column(name = "LOGIN", length = 128, nullable = false)
     private String login;
-    @Column(name = "PASSWORD", unique = true, length = 128, nullable = false)
+    @Column(name = "PASSWORD", length = 128, nullable = false)
     private String password;
 
     @Column(name = "BALANCE", nullable = false, precision = 10)

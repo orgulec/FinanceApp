@@ -24,12 +24,12 @@ public class TransactionModel {
     @Column(name = "AMOUNT", nullable = false)
     private BigDecimal amount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "from_id")
     @JsonBackReference
     private AccountModel fromAccount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "to_id")
     @JsonBackReference
     private AccountModel toAccount;
@@ -38,9 +38,11 @@ public class TransactionModel {
     private ZonedDateTime transactionDate;
 
     @Column(name = "TRANSACTION_TYPE")
+    @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
     private TransactionsStatus status;
 
     @Column(name = "TITLE")

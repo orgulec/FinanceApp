@@ -19,10 +19,15 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Security log into application
+     * @param dto with String login and String password
+     * @return HttpStatus 202 if successfully logged in
+     */
     @PostMapping
     public ResponseEntity<String> login(@Valid @RequestBody LoginDto dto){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getLogin(),dto.getPassword()));
-        return new ResponseEntity<>("User poprawnie zalogowany", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("User successfully logged in.", HttpStatus.ACCEPTED);
     }
 
 

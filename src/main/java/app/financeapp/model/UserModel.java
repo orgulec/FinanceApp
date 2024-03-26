@@ -33,7 +33,7 @@ public class UserModel {
     @JoinColumn(name = "data_id", referencedColumnName = "id")
     private UserData userData;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonBackReference
     private List<AccountModel> accounts = new ArrayStack<>();
 

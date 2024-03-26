@@ -15,4 +15,6 @@ public class AccountNewDto {
     @NotNull
     private AccountType type;
     private BigDecimal amount;
+    private String login;
+    private String password;
 }
