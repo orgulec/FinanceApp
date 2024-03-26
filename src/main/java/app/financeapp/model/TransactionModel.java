@@ -24,12 +24,12 @@ public class TransactionModel {
     @Column(name = "AMOUNT", nullable = false)
     private BigDecimal amount;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "from_id")
     @JsonBackReference
     private AccountModel fromAccount;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "to_id")
     @JsonBackReference
     private AccountModel toAccount;

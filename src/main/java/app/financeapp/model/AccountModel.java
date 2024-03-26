@@ -25,7 +25,7 @@ public class AccountModel {
     @Column(name = "NUMBER", length = 26, nullable = false)
     private String accountNumber;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "owner", referencedColumnName = "id")
     private UserModel owner;
 

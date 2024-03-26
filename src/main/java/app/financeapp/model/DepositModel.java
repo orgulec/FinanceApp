@@ -19,7 +19,7 @@ public class DepositModel {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @JsonBackReference
     private AccountModel account;

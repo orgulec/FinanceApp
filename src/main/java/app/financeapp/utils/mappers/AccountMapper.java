@@ -2,11 +2,13 @@ package app.financeapp.utils.mappers;
 
 import app.financeapp.dto.AccountRequestDto;
 import app.financeapp.model.AccountModel;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 @Component
+@Data
 public class AccountMapper {
 
     public AccountRequestDto toReqDto(AccountModel model) {

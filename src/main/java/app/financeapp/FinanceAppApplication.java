@@ -30,6 +30,9 @@ public class FinanceAppApplication implements CommandLineRunner {
 	private final UserDataRepository userDataRepository;
 	private final AccountRepository accountRepository;
 
+	/**
+	 * Creates first entities into DB for tests
+	 */
 	@Override
 	public void run(String... args) throws Exception {
 		UserData data1 = new UserData(1L, "Nowak", "Kowalski", "Polish", LocalDate.of(1953,12,1), "338763592", "Legionistow","46", "Lanckorona", "34-143", "Poland", ZonedDateTime.now());
@@ -40,8 +43,8 @@ public class FinanceAppApplication implements CommandLineRunner {
 		UserModel user2 = new UserModel(2L, "Maciej", "Zzadupia", ZonedDateTime.now(), data2, new ArrayList<>());
 		userRepository.saveAll(List.of(user1, user2));
 
-		AccountModel account1 = new AccountModel(1L, "51324687454900006581321456", user1, AccountType.CASH, "jankos", "password", BigDecimal.valueOf(15000.50), new ArrayList<>());
-		AccountModel account2 = new AccountModel(2L, "51324687454900006581324168", user2, AccountType.CASH, "maciejos", "password2", BigDecimal.valueOf(15000.95), new ArrayList<>());
+		AccountModel account1 = new AccountModel(1L, "55324687454900006581321456", user1, AccountType.CASH, "jankos", "password", BigDecimal.valueOf(15000.50), new ArrayList<>());
+		AccountModel account2 = new AccountModel(2L, "51264687454912006581924168", user2, AccountType.CASH, "maciejos", "password2", BigDecimal.valueOf(15000.95), new ArrayList<>());
 		accountRepository.saveAll(List.of(account1, account2));
 
 

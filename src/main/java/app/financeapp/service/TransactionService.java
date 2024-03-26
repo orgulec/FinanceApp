@@ -27,14 +27,16 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
 
 
-    public List<TransactionDto> getAllByAccountId(Long id) {
+    public List<TransactionModel> getAllByAccountId(Long id) {
         AccountModel account = accountService.getById(id);
         List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account);
         if(transactionsList.isEmpty()){
             throw new EntityNotFoundException("No transactions founded.");
         }
-        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+//        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+        return transactionsList;
     }
+
 
     @Transactional
     public TransactionModel makeTransfer(TransactionRequestDto transaction) {

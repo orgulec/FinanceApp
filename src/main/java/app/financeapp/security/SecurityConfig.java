@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+    @Configuration
     @EnableWebSecurity
     @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
     public class SecurityConfig {
@@ -27,10 +27,8 @@ import org.springframework.security.web.SecurityFilterChain;
             http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth ->
                             auth
-                                    .requestMatchers("/goal/**").hasRole("USER")
-                                    .requestMatchers("/habit/**").hasRole("USER")
-                                    .requestMatchers("/reminder/**").hasRole("USER")
-                                    .requestMatchers("/register/**").permitAll()
+                                    .requestMatchers("/account/**").hasRole("USER")
+                                    .requestMatchers("/transactions/**").hasRole("USER")
                                     .requestMatchers("/login/**").permitAll()
                                     .requestMatchers("/**").permitAll()
                     ).httpBasic(Customizer.withDefaults());
