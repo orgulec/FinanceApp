@@ -6,9 +6,11 @@ import app.financeapp.model.DepositModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.UserModel;
 import app.financeapp.model.enums.TransactionType;
+import app.financeapp.model.enums.TransactionsStatus;
 import app.financeapp.repository.AccountRepository;
 import app.financeapp.repository.DepositRepository;
 import app.financeapp.repository.TransactionRepository;
+import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.AccountMapper;
 import app.financeapp.utils.mappers.DepositMapper;
 import app.financeapp.utils.mappers.TransactionMapper;
@@ -22,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @Data
@@ -44,6 +45,7 @@ public class AccountService {
         }
         return accountMapper.toReqDto(accountOpt.get());
     }
+
     public AccountModel getById(Long id) {
         Optional<AccountModel> accountOpt = accountRepository.findById(id);
         if(accountOpt.isEmpty()){
@@ -65,17 +67,20 @@ public class AccountService {
         return accountDto;
     }
 
-    public AccountModel substractBalance(Long id, BigDecimal amount){
+    public void subtractBalance(Long id, BigDecimal amount){
         AccountModel account = getById(id);
+        if(account.getBalance().compareTo(amount)<0){
+            throw new IncorrectBalanceValueException("Insufficient funds in the account.");
+        }
         BigDecimal newBalance = account.getBalance().subtract(amount);
         account.setBalance(newBalance);
-        return accountRepository.save(account);
+        accountRepository.save(account);
     }
-    public AccountModel addBalance(Long id, BigDecimal amount){
+    public void addBalance(Long id, BigDecimal amount){
         AccountModel account = getById(id);
         BigDecimal newBalance = account.getBalance().add(amount);
         account.setBalance(newBalance);
-        return accountRepository.save(account);
+        accountRepository.save(account);
     }
 
     public AccountModel addNewAccountToUser(AccountNewDto newDto) {
@@ -101,16 +106,21 @@ public class AccountService {
         return depositRepository.save(newDeposit);
     }
 
-    public TransactionModel transferToDeposit(DepositModel newDeposit, AccountModel fromAccount) {
+    public void transferToDeposit(DepositModel newDeposit, AccountModel fromAccount) {
+        if(fromAccount.getBalance().compareTo(newDeposit.getBalance())<0){
+            throw new IncorrectBalanceValueException("Insufficient funds in the account.");
+        }
         TransactionModel transaction = new TransactionModel();
+
         transaction.setTransactionType(TransactionType.DEPOSIT);
-        transaction.setTitle("Lokata");
+        transaction.setTitle("Own deposit transfer.");
         transaction.setFromAccount(fromAccount);
         transaction.setToAccount(fromAccount);
         transaction.setAmount(newDeposit.getBalance());
+        transaction.setStatus(TransactionsStatus.ACCEPTED);
 
-        substractBalance(fromAccount.getId(), newDeposit.getBalance());
-        return transactionRepository.save(transaction);
+        subtractBalance(fromAccount.getId(), newDeposit.getBalance());
+        transactionRepository.save(transaction);
     }
 
     private String generateAccountNumber() {

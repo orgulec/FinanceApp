@@ -31,6 +31,7 @@ import org.springframework.security.web.SecurityFilterChain;
                                     .requestMatchers("/transactions/**").hasRole("USER")
                                     .requestMatchers("/login/**").permitAll()
                                     .requestMatchers("/**").permitAll()
+//                                    .requestMatchers("/**").hasRole("USER")
                     ).httpBasic(Customizer.withDefaults());
             return http.build();
         }
@@ -40,12 +41,12 @@ import org.springframework.security.web.SecurityFilterChain;
     }
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails goalUser = User.builder()
+        UserDetails user1 = User.builder()
                 .username("AccountUser")
                 .password(passwordEncoder.encode("pass")) // Kodowanie hasła
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(goalUser);
+        return new InMemoryUserDetailsManager(user1);
     }
 
         @Bean

@@ -3,7 +3,6 @@ package app.financeapp.service;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
-import app.financeapp.model.DepositModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.model.enums.TransactionsStatus;
@@ -27,14 +26,24 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
 
 
-    public List<TransactionModel> getAllByAccountId(Long id) {
+    public List<TransactionDto> getAllByAccountId(Long id) {
         AccountModel account = accountService.getById(id);
         List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account);
         if(transactionsList.isEmpty()){
             throw new EntityNotFoundException("No transactions founded.");
         }
-//        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
-        return transactionsList;
+        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+    }
+
+    public List<TransactionDto> getAllByAccountIdAndType(Long id, String type) {
+        AccountModel account = accountService.getById(id);
+        List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account).stream()
+                .filter(t -> t.getTransactionType().equals(TransactionType.valueOf(type))).toList();
+        if(transactionsList.isEmpty()){
+            throw new EntityNotFoundException("No transactions founded.");
+        }
+        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+
     }
 
 
@@ -47,7 +56,7 @@ public class TransactionService {
 
         TransactionModel newTransaction = createTransactionFromDto(transaction, fromAccount, toAccount);
 
-        accountService.substractBalance(fromAccount.getId(), transaction.getAmount());
+        accountService.subtractBalance(fromAccount.getId(), transaction.getAmount());
         accountService.addBalance(toAccount.getId(), transaction.getAmount());
         return transactionRepository.save(newTransaction);
     }
@@ -74,6 +83,5 @@ public class TransactionService {
         newTransaction.setStatus(TransactionsStatus.WAITING);
         return newTransaction;
     }
-
 
 }
