@@ -39,11 +39,8 @@ public class AccountService {
     private final TransactionMapper transactionMapper;
 
     public AccountRequestDto getByIdDto(Long id) {
-        Optional<AccountModel> accountOpt = accountRepository.findById(id);
-        if(accountOpt.isEmpty()){
-            throw new EntityNotFoundException("No Account founded.");
-        }
-        return accountMapper.toReqDto(accountOpt.get());
+        AccountModel account = getById(id);
+        return accountMapper.toReqDto(account);
     }
 
     public AccountModel getById(Long id) {
@@ -61,9 +58,9 @@ public class AccountService {
         }
         List<AccountRequestDto> accountDto = new ArrayList<>();
 
-        accountsList.forEach(a -> {
-            accountDto.add(accountMapper.toReqDto(a));
-        });
+        accountsList.forEach(
+                a -> accountDto.add(accountMapper.toReqDto(a))
+        );
         return accountDto;
     }
 
@@ -76,6 +73,7 @@ public class AccountService {
         account.setBalance(newBalance);
         accountRepository.save(account);
     }
+
     public void addBalance(Long id, BigDecimal amount){
         AccountModel account = getById(id);
         BigDecimal newBalance = account.getBalance().add(amount);
@@ -110,10 +108,11 @@ public class AccountService {
         if(fromAccount.getBalance().compareTo(newDeposit.getBalance())<0){
             throw new IncorrectBalanceValueException("Insufficient funds in the account.");
         }
+        String title = "Own deposit transfer.";
         TransactionModel transaction = new TransactionModel();
 
         transaction.setTransactionType(TransactionType.DEPOSIT);
-        transaction.setTitle("Own deposit transfer.");
+        transaction.setTitle(title);
         transaction.setFromAccount(fromAccount);
         transaction.setToAccount(fromAccount);
         transaction.setAmount(newDeposit.getBalance());

@@ -22,7 +22,6 @@ import java.util.List;
 public class AccountController {
     private final AccountService accountService;
     private final TransactionService transactionService;
-    private final UserService userService;
 
     /**
      * Gets an account by Id

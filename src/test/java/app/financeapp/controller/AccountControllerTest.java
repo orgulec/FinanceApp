@@ -1,8 +1,11 @@
 package app.financeapp.controller;
 
-import app.financeapp.dto.AccountRequestDto;
-import app.financeapp.dto.TransactionDto;
-import app.financeapp.dto.UserDto;
+import app.financeapp.dto.*;
+import app.financeapp.model.AccountModel;
+import app.financeapp.model.DepositModel;
+import app.financeapp.model.TransactionModel;
+import app.financeapp.model.UserModel;
+import app.financeapp.model.enums.AccountType;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.service.AccountService;
 import app.financeapp.service.TransactionService;
@@ -16,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +35,6 @@ class AccountControllerTest {
     private AccountService accountService;
     @Mock
     private TransactionService transactionService;
-//    @Mock
-//    private TransactionMapper transactionMapper;
     @InjectMocks
     private AccountController accountController;
 
@@ -84,7 +87,7 @@ class AccountControllerTest {
     }
 
     @Test
-    void getAllTransactionsByAccountId() {
+    void getAllTransactionsByAccountId_shouldReturnListOfTransactionDtoWithStatus200() {
         //given
         Long id = 1L;
         TransactionDto transactionDto = new TransactionDto();
@@ -104,14 +107,14 @@ class AccountControllerTest {
     }
 
     @Test
-    void getAllTransactionsByAccountIdAndType() {
+    void getAllTransactionsByAccountIdAndType_shouldReturnListOfTransactionDtoWithStatus200() {
         //given
         Long id = 1L;
         String type = "INCOME";
         TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setTransactionType(TransactionType.INCOME);
+            transactionDto.setTransactionType(TransactionType.INCOME);
         List<TransactionDto> transactionList = new ArrayList<>();
-        transactionList.add(transactionDto);
+            transactionList.add(transactionDto);
         //when
         when(transactionService.getAllByAccountIdAndType(id, type)).thenReturn(transactionList);
 
@@ -126,35 +129,65 @@ class AccountControllerTest {
     }
 
     @Test
-    void makeTransaction() {
+    void makeTransaction_shouldReturnTransactionModelWithStatus202() {
         //given
-
+        TransactionRequestDto transactionDto = new TransactionRequestDto();
+        TransactionModel transaction = new TransactionModel();
 
         //when
-
+        when(transactionService.makeTransfer(transactionDto)).thenReturn(transaction);
 
         //then
+        ResponseEntity<TransactionModel> result = accountController.makeTransaction(transactionDto);
+        assertAll(
+                ()->assertEquals(HttpStatus.ACCEPTED, result.getStatusCode()),
+                ()->assertEquals(transaction, result.getBody())
+        );
     }
 
     @Test
-    void createNewAccountForUser() {
+    void createNewAccountForUser_shouldReturnNewAccountModelWithStatus201() {
         //given
-
+        UserModel user = new UserModel();
+        AccountNewDto accountDto = new AccountNewDto();
+            accountDto.setOwner(user);
+            accountDto.setType(AccountType.CASH);
+        AccountModel account = new AccountModel();
+            account.setOwner(user);
+            account.setType(AccountType.CASH);
 
         //when
-
+        when(accountService.addNewAccountToUser(accountDto)).thenReturn(account);
 
         //then
+        ResponseEntity<AccountModel> result = accountController.createNewAccountForUser(accountDto);
+        assertAll(
+                ()->assertEquals(HttpStatus.CREATED, result.getStatusCode()),
+                ()->assertEquals(account, result.getBody())
+        );
     }
 
     @Test
-    void createNewDepositForUser() {
+    void createNewDepositForUser_shouldReturnNewDepositModelWithStatus201() {
         //given
+        ZonedDateTime date = ZonedDateTime.now();
+        BigDecimal balance = new BigDecimal(0);
 
+        DepositDto depositDto = new DepositDto();
+            depositDto.setPlannedEndDate(date);
+            depositDto.setBalance(balance);
+        DepositModel deposit = new DepositModel();
+            deposit.setPlannedEndDate(date);
+            deposit.setBalance(balance);
 
         //when
-
+        when(accountService.addNewDepositToUser(depositDto)).thenReturn(deposit);
 
         //then
+        ResponseEntity<DepositModel> result = accountController.createNewDepositForUser(depositDto);
+        assertAll(
+                ()->assertEquals(HttpStatus.CREATED, result.getStatusCode()),
+                ()->assertEquals(deposit, result.getBody())
+        );
     }
 }

@@ -21,7 +21,7 @@ public class LoginController {
 
     /**
      * Security log into application
-     * @param dto with String login and String password
+     * @param dto with String login (AccountUser) and String password (pass)
      * @return HttpStatus 202 if successfully logged in
      */
     @PostMapping

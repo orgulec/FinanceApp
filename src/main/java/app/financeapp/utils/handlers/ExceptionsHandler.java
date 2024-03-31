@@ -1,7 +1,7 @@
 package app.financeapp.utils.handlers;
 
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
-import app.financeapp.utils.exceptions.NoTransactionFoundedException;
+import app.financeapp.utils.exceptions.NoTransactionFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class ExceptionsHandler {
     public ResponseEntity<String> entityNotFoundExceptionHandler(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(NoTransactionFoundedException.class)
-    public ResponseEntity<String> noTransactionFoundedExceptionHandler(NoTransactionFoundedException ex){
+    @ExceptionHandler(NoTransactionFoundException.class)
+    public ResponseEntity<String> noTransactionFoundedExceptionHandler(NoTransactionFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
