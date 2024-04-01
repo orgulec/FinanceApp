@@ -6,7 +6,6 @@ import app.financeapp.model.DepositModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.service.AccountService;
 import app.financeapp.service.TransactionService;
-import app.financeapp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

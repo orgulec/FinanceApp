@@ -6,7 +6,9 @@ import app.financeapp.dto.DepositDto;
 import app.financeapp.dto.UserDto;
 import app.financeapp.model.AccountModel;
 import app.financeapp.model.DepositModel;
+import app.financeapp.model.TransactionModel;
 import app.financeapp.model.UserModel;
+import app.financeapp.model.enums.AccountType;
 import app.financeapp.repository.AccountRepository;
 import app.financeapp.repository.DepositRepository;
 import app.financeapp.repository.TransactionRepository;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
@@ -30,8 +33,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
@@ -159,6 +161,7 @@ class AccountServiceTest {
 
         //then
         assertThrows(IncorrectBalanceValueException.class, ()->accountService.subtractBalance(id, amount));
+        verify(accountRepository, never()).save(any(AccountModel.class));
     }
 
     @Test
@@ -228,12 +231,47 @@ class AccountServiceTest {
     }
 
     @Test
-    void transferToDeposit() {
+    void transferToDeposit_shouldSaveNewTransaction() {
         //given
+        AccountModel fromAccount = new AccountModel();
+            fromAccount.setAccountNumber("123456789");
+            fromAccount.setLogin("login");
+            fromAccount.setPassword("pass");
+            fromAccount.setBalance(new BigDecimal(100));
+            fromAccount.setType(AccountType.CASH);
+        DepositModel newDeposit = new DepositModel();
+            newDeposit.setBalance(new BigDecimal(50));
+            newDeposit.setCreationDate(ZonedDateTime.now());
+            newDeposit.setPlannedEndDate(ZonedDateTime.now());
+        TransactionModel transaction = new TransactionModel();
+            transaction.setToAccount(fromAccount);
+            transaction.setTransactionDate(ZonedDateTime.now());
+        //when
+        when(accountRepository.findById(fromAccount.getId())).thenReturn(Optional.of(fromAccount));
+        when(transactionRepository.save(any(TransactionModel.class))).thenReturn(transaction);
+        //then
+        accountService.transferToDeposit(newDeposit, fromAccount);
+        verify(transactionRepository).save(any(TransactionModel.class));
+    }
+    @Test
+    void transferToDeposit_shouldThrowIncorrectBalanceValueExceptionWhenTooLessCashOnAccount() {
+        //given
+        String ex = "Insufficient funds in the account.";
+        AccountModel fromAccount = new AccountModel();
+            fromAccount.setAccountNumber("123456789");
+            fromAccount.setLogin("login");
+            fromAccount.setPassword("pass");
+            fromAccount.setBalance(new BigDecimal(0));
+            fromAccount.setType(AccountType.CASH);
+        DepositModel newDeposit = new DepositModel();
+            newDeposit.setBalance(new BigDecimal(50));
+            newDeposit.setCreationDate(ZonedDateTime.now());
+            newDeposit.setPlannedEndDate(ZonedDateTime.now());
 
         //when
-
         //then
-
+        assertThrows(IncorrectBalanceValueException.class,
+        () -> accountService.transferToDeposit(newDeposit, fromAccount));
+        verify(transactionRepository, never()).save(any(TransactionModel.class));
     }
 }
