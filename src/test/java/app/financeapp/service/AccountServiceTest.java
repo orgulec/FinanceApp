@@ -12,7 +12,6 @@ import app.financeapp.model.enums.AccountType;
 import app.financeapp.repository.AccountRepository;
 import app.financeapp.repository.DepositRepository;
 import app.financeapp.repository.TransactionRepository;
-import app.financeapp.repository.UserRepository;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.AccountMapper;
 import app.financeapp.utils.mappers.DepositMapper;
@@ -21,9 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -40,8 +37,6 @@ class AccountServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
-    @Mock
-    private UserRepository userRepository;
     @Mock
     private DepositRepository depositRepository;
     @Mock
@@ -71,6 +66,7 @@ class AccountServiceTest {
         //then
         AccountRequestDto result = accountService.getByIdDto(id);
         assertAll(
+                ()->assertNotNull(result),
                 ()->assertEquals(accountDto, result),
                 ()->assertEquals(number, result.getNumber())
         );
@@ -199,6 +195,7 @@ class AccountServiceTest {
 
         verify(accountRepository).save(any(AccountModel.class));
         assertAll(
+                ()->assertNotNull(result),
                 ()->assertEquals(newAccount.getId(), result.getId()),
                 ()->assertEquals(newAccount.getOwner(), result.getOwner())
         );
@@ -271,7 +268,7 @@ class AccountServiceTest {
         //when
         //then
         assertThrows(IncorrectBalanceValueException.class,
-        () -> accountService.transferToDeposit(newDeposit, fromAccount));
+            () -> accountService.transferToDeposit(newDeposit, fromAccount));
         verify(transactionRepository, never()).save(any(TransactionModel.class));
     }
 }

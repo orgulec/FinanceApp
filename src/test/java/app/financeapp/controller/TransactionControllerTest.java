@@ -24,6 +24,7 @@ class TransactionControllerTest {
     private TransactionRepository transactionRepository;
     @InjectMocks
     TransactionController transactionController;
+
     @Test
     void getAll_shouldReturnListOfTransactionsWithStatus200() {
         //given
@@ -42,10 +43,10 @@ class TransactionControllerTest {
                 ()->assertEquals(transactionList, result.getBody())
         );
     }
+
     @Test
     void getAll_shouldThrowNoTransactionFoundException() {
         //given
-        List<TransactionModel> transactionList;
         String ex = "No transactions founded.";
         //when
         when(transactionRepository.findAll()).thenThrow(new NoTransactionFoundException(ex));

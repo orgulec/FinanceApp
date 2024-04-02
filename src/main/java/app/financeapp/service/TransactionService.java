@@ -15,6 +15,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,20 +33,21 @@ public class TransactionService {
         if(transactionsList.isEmpty()){
             throw new EntityNotFoundException("No transactions founded.");
         }
-        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+        return mapToDtoAndCollectToList(transactionsList);
     }
 
     public List<TransactionDto> getAllByAccountIdAndType(Long id, String type) {
         AccountModel account = accountService.getById(id);
-        List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account).stream()
-                .filter(t -> t.getTransactionType().equals(TransactionType.valueOf(type))).toList();
+        List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account)
+                .stream()
+                .filter(t -> t.getTransactionType().equals(TransactionType.valueOf(type)))
+                .toList();
         if(transactionsList.isEmpty()){
             throw new EntityNotFoundException("No transactions founded.");
         }
-        return transactionsList.stream().map(transactionMapper::toDto).collect(Collectors.toList());
+        return mapToDtoAndCollectToList(transactionsList);
 
     }
-
 
     @Transactional
     public TransactionModel makeTransfer(TransactionRequestDto transaction) {
@@ -65,7 +67,7 @@ public class TransactionService {
         if(fromAccount == null || toAccount == null){
             throw new EntityNotFoundException("Check accounts data!");
         }
-        if(transaction.getAmount() == null || transaction.getAmount().compareTo(new BigDecimal("0")) < 0){
+        if(transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) < 0){
             throw new IncorrectBalanceValueException("Incorrect amount value.");
         }
         if(transaction.getAmount().compareTo(fromAccount.getBalance()) > 0){
@@ -80,8 +82,15 @@ public class TransactionService {
         newTransaction.setFromAccount(fromAccount);
         newTransaction.setToAccount(toAccount);
         newTransaction.setTitle(transaction.getTitle());
+        newTransaction.setTransactionDate(ZonedDateTime.now());
         newTransaction.setStatus(TransactionsStatus.WAITING);
         return newTransaction;
+    }
+
+    private List<TransactionDto> mapToDtoAndCollectToList(List<TransactionModel> transactionsList) {
+        return transactionsList.stream()
+                .map(transactionMapper::toDto)
+                .collect(Collectors.toList());
     }
 
 }
