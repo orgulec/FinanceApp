@@ -16,7 +16,7 @@ Functionalities:
 * Adding income and expense transactions, specifying category, amount, date and account.
 * Ability to assign transactions to a specific budget.
 
-3. Budget planning: (in progress)
+3. Budget planning:
 * Creating monthly budgets specifying spending limits for various categories.
 
 4. Financial analysis: (in progress)
@@ -36,7 +36,7 @@ PUT - /account/payment
     "amount": 5000,
     "fromAccount": {"id": 1 },
     "toAccount": {"id": 2 },
-    "transactionType": "PAYMENT",
+    "transactionType": "ENTERTAINMENT",
     "title": "Płatność"
     }
 
@@ -67,7 +67,7 @@ GET - /account/userAccounts
     "lastName": "Kos"
     }
 
-GET - /account/historyByType?id=1&type=DEPOSIT
+GET - /account/historyByType?id=1&type=ENTERTAINMENT
 
 GET - /transactions/all
 <h6>

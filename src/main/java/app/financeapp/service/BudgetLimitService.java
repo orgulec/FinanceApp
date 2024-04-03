@@ -5,6 +5,7 @@ import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
 import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.enums.TransactionType;
+import app.financeapp.repository.AccountRepository;
 import app.financeapp.repository.BudgetLimitRepository;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,12 +21,10 @@ import java.util.Optional;
 public class BudgetLimitService {
 
     private final BudgetLimitRepository budgetLimitRepository;
-    private final AccountService accountService;
-    private final TransactionService transactionService;
+    private final AccountRepository accountRepository;
 
-    public List<BudgetLimitModel> getAll(Long id) {
-        AccountModel account = accountService.getById(id);
-        List<BudgetLimitModel> allBudgetLimitList = budgetLimitRepository.findAllByAccount_Id(account.getId());
+    public List<BudgetLimitModel> getAll(Long accountId) {
+        List<BudgetLimitModel> allBudgetLimitList = budgetLimitRepository.findAllByAccount_Id(accountId);
         if(allBudgetLimitList.isEmpty()){
             throw new EntityNotFoundException("No budget limit founded.");
         }
@@ -33,13 +32,14 @@ public class BudgetLimitService {
     }
 
     public BudgetLimitModel addNew(BudgetLimitDto dto) {
-        AccountModel account = accountService.getById(dto.getAccount().getId());
+        AccountModel account = accountRepository.findById(dto.getAccount().getId()).orElseThrow(() -> new EntityNotFoundException("No account founded."));
         BudgetLimitModel newBudget = new BudgetLimitModel();
         newBudget.setTitle(dto.getTitle());
         newBudget.setAccount(account);
+        newBudget.setType(dto.getType());
         newBudget.setLimit(dto.getLimit());
 
-        return newBudget;
+        return budgetLimitRepository.save(newBudget);
     }
 
     public BudgetLimitModel getById(Long budgetId) {

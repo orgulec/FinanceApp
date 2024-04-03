@@ -112,7 +112,7 @@ public class AccountService {
         String title = "Own deposit transfer.";
         TransactionModel transaction = new TransactionModel();
 
-        transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setTransactionType(TransactionType.SAVINGS);
         transaction.setTitle(title);
         transaction.setFromAccount(fromAccount);
         transaction.setToAccount(fromAccount);

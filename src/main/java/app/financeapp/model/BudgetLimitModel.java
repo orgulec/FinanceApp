@@ -1,6 +1,7 @@
 package app.financeapp.model;
 
 import app.financeapp.model.enums.TransactionType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,21 +20,20 @@ public class BudgetLimitModel {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @JsonBackReference
     private AccountModel account;
-
-//    @OneToMany
-//    private TransactionModel transaction;
 
     @Column(name = "TITLE")
     private String title;
 
-    @Column(name = "TYPE", nullable = false)
+    @Column(name = "TYPE")
     private TransactionType type;
 
-    @Column(name = "LIMIT", nullable = false)
+    @Column(name = "UPPER_LIMIT", nullable = false)
     private BigDecimal limit;
 
-    @Column(name = "USED_LIMIT")
+    @Column(name = "USED_LIMIT", nullable = false, precision = 10)
     private BigDecimal usedLimit = new BigDecimal(0);
 
 }
