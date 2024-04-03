@@ -29,9 +29,9 @@ import org.springframework.security.web.SecurityFilterChain;
                             auth
                                     .requestMatchers("/account/**").hasRole("USER")
                                     .requestMatchers("/transactions/**").hasRole("USER")
+                                    .requestMatchers("/budget/**").hasRole("USER")
                                     .requestMatchers("/login/**").permitAll()
                                     .requestMatchers("/**").permitAll()
-//                                    .requestMatchers("/**").hasRole("USER")
                     ).httpBasic(Customizer.withDefaults());
             return http.build();
         }

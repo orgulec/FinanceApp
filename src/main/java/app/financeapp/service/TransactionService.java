@@ -3,6 +3,7 @@ package app.financeapp.service;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
+import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.model.enums.TransactionsStatus;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
+    private final BudgetLimitService budgetLimitService;
     private final TransactionMapper transactionMapper;
 
 
@@ -55,6 +57,11 @@ public class TransactionService {
         AccountModel toAccount = accountService.getById(transaction.getToAccount().getId());
 
         checkIfTransactionAndAccountsAreCorrect(transaction, fromAccount, toAccount);
+
+        BudgetLimitModel limit = budgetLimitService.getLimitByAccountAndType(fromAccount.getId(), transaction.getTransactionType());
+        if(!limit.getLimit().equals(BigDecimal.ZERO)){
+            budgetLimitService.addTransactionToBudgetLimit(transaction, limit);
+        }
 
         TransactionModel newTransaction = createTransactionFromDto(transaction, fromAccount, toAccount);
 
