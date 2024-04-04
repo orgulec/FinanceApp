@@ -112,7 +112,7 @@ class AccountControllerTest {
         Long id = 1L;
         String type = "INCOME";
         TransactionDto transactionDto = new TransactionDto();
-            transactionDto.setTransactionType(TransactionType.INCOME);
+            transactionDto.setTransactionType(TransactionType.OTHERS);
         List<TransactionDto> transactionList = new ArrayList<>();
             transactionList.add(transactionDto);
         //when

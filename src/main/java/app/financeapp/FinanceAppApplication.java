@@ -1,10 +1,13 @@
 package app.financeapp;
 
 import app.financeapp.model.AccountModel;
+import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.UserData;
 import app.financeapp.model.UserModel;
 import app.financeapp.model.enums.AccountType;
+import app.financeapp.model.enums.TransactionType;
 import app.financeapp.repository.AccountRepository;
+import app.financeapp.repository.BudgetLimitRepository;
 import app.financeapp.repository.UserDataRepository;
 import app.financeapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class FinanceAppApplication implements CommandLineRunner {
     private final UserRepository userRepository;
     private final UserDataRepository userDataRepository;
     private final AccountRepository accountRepository;
+    private final BudgetLimitRepository budgetLimitRepository;
 
     /**
      * Creates first entities into DB for tests
@@ -47,6 +51,10 @@ public class FinanceAppApplication implements CommandLineRunner {
         AccountModel account2 = new AccountModel(2L, "51264687454912006581924168", user2, AccountType.CASH, "maciejos", "password2", BigDecimal.valueOf(15000.95), new ArrayList<>());
         accountRepository.saveAll(List.of(account1, account2));
 
+        BudgetLimitModel budget1 = new BudgetLimitModel(1L, account1, "Rozrywka", TransactionType.ENTERTAINMENT, new BigDecimal(7500), new BigDecimal(2000));
+        BudgetLimitModel budget2 = new BudgetLimitModel(2L, account1, "Zakupy", TransactionType.SHOPPING, new BigDecimal(3000), new BigDecimal(2500));
+        BudgetLimitModel budget3 = new BudgetLimitModel(3L, account1, "Oszczędności", TransactionType.SAVINGS, new BigDecimal(8000), new BigDecimal(2500));
+        budgetLimitRepository.saveAll(List.of(budget1, budget2, budget3));
 
     }
 }

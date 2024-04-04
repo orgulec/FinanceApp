@@ -1,5 +1,6 @@
 package app.financeapp.utils.handlers;
 
+import app.financeapp.utils.exceptions.BudgetLimitAlreadyExistException;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.exceptions.NoTransactionFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,10 @@ public class ExceptionsHandler {
     @ExceptionHandler(NoTransactionFoundException.class)
     public ResponseEntity<String> noTransactionFoundedExceptionHandler(NoTransactionFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(BudgetLimitAlreadyExistException.class)
+    public ResponseEntity<String> budgetLimitAlreadyExistExceptionHandler(BudgetLimitAlreadyExistException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
 }

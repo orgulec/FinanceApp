@@ -59,7 +59,7 @@ public class TransactionService {
         checkIfTransactionAndAccountsAreCorrect(transaction, fromAccount, toAccount);
 
         BudgetLimitModel limit = budgetLimitService.getLimitByAccountAndType(fromAccount.getId(), transaction.getTransactionType());
-        if(!limit.getLimit().equals(BigDecimal.ZERO)){
+        if(!limit.getUpperLimit().equals(BigDecimal.ZERO)){
             budgetLimitService.addTransactionToBudgetLimit(transaction, limit);
         }
 

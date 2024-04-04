@@ -19,7 +19,7 @@ public class BudgetLimitModel {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @JsonBackReference
     private AccountModel account;
@@ -31,9 +31,9 @@ public class BudgetLimitModel {
     private TransactionType type;
 
     @Column(name = "UPPER_LIMIT", nullable = false)
-    private BigDecimal limit;
+    private BigDecimal upperLimit;
 
-    @Column(name = "USED_LIMIT", nullable = false, precision = 10)
-    private BigDecimal usedLimit = new BigDecimal(0);
+    @Column(name = "USED_LIMIT", nullable = false)
+    private BigDecimal usedLimit;// = new BigDecimal(0);
 
 }

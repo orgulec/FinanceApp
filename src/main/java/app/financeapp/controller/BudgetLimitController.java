@@ -21,6 +21,11 @@ public class BudgetLimitController {
         return ResponseEntity.ok(budgetLimitService.getAll(accountId));
     }
 
+    @GetMapping("/statistics/{accountId}")
+    public ResponseEntity<List<String>> getStatisticsByAccountId(@PathVariable Long accountId){
+        return ResponseEntity.ok(budgetLimitService.getStatistics(accountId));
+    }
+
     @GetMapping("/getByType/{budgetId}")
     public ResponseEntity<BudgetLimitModel> getBudgetByIdAndType(@PathVariable Long budgetId){
         return ResponseEntity.ok(budgetLimitService.getById(budgetId));

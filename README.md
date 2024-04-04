@@ -18,6 +18,7 @@ Functionalities:
 
 3. Budget planning:
 * Creating monthly budgets specifying spending limits for various categories.
+* Blocking transactions if the specified budget is exceeded
 
 4. Financial analysis: (in progress)
 * Generating reports and charts showing the structure of expenses, revenues and savings.
@@ -27,10 +28,10 @@ Functionalities:
 * User registration and login.
 
 <hr>
-SWAGGER:
+<b>SWAGGER:</b>
 
 http://localhost:8088/swagger-ui/index.html#
-<h6>
+
 PUT - /account/payment
     {
     "amount": 5000,
@@ -56,9 +57,15 @@ POST - /account/createDeposit
     "plannedEndDate": "2025-03-26T01:02:27.8793178+01:00"
     }
 
-GET - /account/1
-
-GET - /account/historyById/1
+POST - /budget/createBudgetLimit
+    {
+    "account":{
+    "id": 1
+    },
+    "type": "HEALTH",
+    "limit": 6000,
+    "title": "Zdrowie"
+    }
 
 GET - /account/userAccounts
     {
@@ -67,7 +74,16 @@ GET - /account/userAccounts
     "lastName": "Kos"
     }
 
+GET - /account/1
+
+GET - /account/historyById/1
+
 GET - /account/historyByType?id=1&type=ENTERTAINMENT
 
 GET - /transactions/all
-<h6>
+
+GET - /budget/allByAccount/1
+
+GET - /budget/statistics/1
+
+<hr>

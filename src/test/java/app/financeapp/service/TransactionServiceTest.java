@@ -3,6 +3,7 @@ package app.financeapp.service;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
+import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.enums.AccountType;
 import app.financeapp.model.enums.TransactionType;
@@ -33,6 +34,8 @@ private TransactionRepository transactionRepository;
 private AccountService accountService;
 @Mock
 private TransactionMapper transactionMapper;
+@Mock
+private BudgetLimitService budgetLimitService;
 @InjectMocks
 private TransactionService transactionService;
 
@@ -85,10 +88,10 @@ private TransactionService transactionService;
     }
 
     @Test
-    void getAllByAccountIdAndType() {
+    void getAllByAccountIdAndType_shouldReturnTransactionDtoList() {
         //given
         Long id = 1L;
-        String type = "INCOME";
+        String type = "OTHERS";
         AccountModel account = new AccountModel();
             account.setAccountNumber("1234567890");
             account.setLogin("login");
@@ -100,7 +103,7 @@ private TransactionService transactionService;
             transaction.setTransactionDate(ZonedDateTime.now());
             transaction.setFromAccount(account);
             transaction.setToAccount(new AccountModel());
-            transaction.setTransactionType(TransactionType.INCOME);
+            transaction.setTransactionType(TransactionType.OTHERS);
         List<TransactionModel> transactionList = new ArrayList<>();
         transactionList.add(transaction);
         //when
@@ -127,19 +130,23 @@ private TransactionService transactionService;
         TransactionRequestDto transactionDto = new TransactionRequestDto();
             transactionDto.setTitle("Tytuł");
             transactionDto.setAmount(new BigDecimal(10));
-            transactionDto.setTransactionType(TransactionType.INCOME);
+            transactionDto.setTransactionType(TransactionType.OTHERS);
             transactionDto.setFromAccount(fromAccount);
             transactionDto.setToAccount(toAccount);
         TransactionModel newTransaction = new TransactionModel();
             newTransaction.setTitle("Tytuł");
             newTransaction.setAmount(new BigDecimal(10));
-            newTransaction.setTransactionType(TransactionType.INCOME);
+            newTransaction.setTransactionType(TransactionType.OTHERS);
             newTransaction.setFromAccount(fromAccount);
             newTransaction.setToAccount(toAccount);
+        BudgetLimitModel budget = new BudgetLimitModel();
+            budget.setUpperLimit(new BigDecimal(0));
+            budget.setType(TransactionType.OTHERS);
 
         //when
         when(accountService.getById(fromAccount.getId())).thenReturn(fromAccount);
         when(accountService.getById(toAccount.getId())).thenReturn(toAccount);
+        when(budgetLimitService.getLimitByAccountAndType(fromAccount.getId(),TransactionType.OTHERS)).thenReturn(budget);
         doNothing().when(accountService).subtractBalance(fromAccount.getId(), transactionDto.getAmount());
         doNothing().when(accountService).addBalance(toAccount.getId(), transactionDto.getAmount());
         when(transactionRepository.save(any(TransactionModel.class))).thenReturn(newTransaction);
