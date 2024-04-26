@@ -18,7 +18,7 @@ public class TransactionController {
     private final TransactionRepository transactionRepository;
 
     /**
-     * Retives all transactions from DB
+     * Retrieves all transactions from DB
      * @return List of transactions wrapped in dto
      */
     @GetMapping("/all")
