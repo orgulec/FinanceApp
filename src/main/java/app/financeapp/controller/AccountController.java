@@ -8,6 +8,7 @@ import app.financeapp.service.AccountService;
 import app.financeapp.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class AccountController {
     private final TransactionService transactionService;
 
     /**
-     * Gets an account by Id
-     * @param id Id of the account
+     * Gets an account by id
+     * @param id id of the account
      * @return AccountDto with status 200
      */
     @Operation(summary = "Gets an account by Id", description = "Returns AccountDto with status 200")
     @GetMapping("/{id}")
-    public ResponseEntity<AccountRequestDto> getById(@PathVariable Long id){
+    public ResponseEntity<AccountRequestDto> getById(@PathVariable @NotNull Long id){
         return ResponseEntity.ok(accountService.getByIdDto(id));
     }
 
@@ -46,24 +47,24 @@ public class AccountController {
 
     /**
      * Gets all Transactions by account Id
-     * @param id Id of the Account
+     * @param id id of the Account
      * @return List of TransactionDtos and status 200
      */
     @Operation(summary = "Gets all Transactions by account Id", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/historyById/{id}")
-    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountId(@PathVariable Long id){
+    @GetMapping("/history/{id}")
+    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountId(@PathVariable @NotNull Long id){
         return ResponseEntity.ok(transactionService.getAllByAccountId(id));
     }
 
     /**
      * Gets all Transactions by account Id and TransactionType
-     * @param id Id of the Account
+     * @param id id of the Account
      * @param type Type of Transaction
      * @return List of TransactionDtos and status 200
      */
     @Operation(summary = "Gets all Transactions by account Id and TransactionType", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/historyByType")
-    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@RequestParam(name = "id") Long id, @RequestParam(name = "type") String type){
+    @GetMapping("/history")
+    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@NotNull @RequestParam(name = "id") Long id, @NotNull @RequestParam(name = "type") String type){
         return ResponseEntity.ok(transactionService.getAllByAccountIdAndType(id, type));
     }
 
@@ -84,7 +85,7 @@ public class AccountController {
      * @return New AccountModel with status 201
      */
     @Operation(summary = "Creates a new account", description = "Returns new AccountModel with status 201")
-    @PostMapping("/createAccount")
+    @PostMapping("/newAccount")
     public ResponseEntity<AccountModel> createNewAccountForUser(@Valid @RequestBody AccountNewDto newAccount){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addNewAccountToUser(newAccount));
     }
@@ -95,7 +96,7 @@ public class AccountController {
      * @return New DepositModel with status 201
      */
     @Operation(summary = "Creates a new deposit on the user account", description = "Returns new DepositModel with status 201")
-    @PostMapping("/createDeposit")
+    @PostMapping("/newDeposit")
     public ResponseEntity<DepositModel> createNewDepositForUser(@Valid @RequestBody DepositDto deposit){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addNewDepositToUser(deposit));
     }

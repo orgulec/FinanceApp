@@ -28,13 +28,13 @@ public class BudgetLimitService {
 
     public List<BudgetLimitModel> getAll(Long accountId) {
         List<BudgetLimitModel> allBudgetLimitList = budgetLimitRepository.findAllByAccount_Id(accountId);
-        if(allBudgetLimitList.isEmpty()){
+        if (allBudgetLimitList.isEmpty()) {
             throw new EntityNotFoundException("No budget limit founded.");
         }
         return allBudgetLimitList;
     }
 
-    public String showStatistics(BudgetLimitModel model){
+    public String showStatistics(BudgetLimitModel model) {
         BudgetLimitResponseDto dto = new BudgetLimitResponseDto();
         dto.setTitle(model.getTitle());
         dto.setType(model.getType());
@@ -46,16 +46,15 @@ public class BudgetLimitService {
 
     public List<String> getStatistics(Long accountId) {
         List<BudgetLimitModel> budgetList = getAll(accountId);
-        List<String> statistics = budgetList.stream()
+        return budgetList.stream()
                 .map(this::showStatistics)
                 .collect(Collectors.toList());
-        return statistics;
     }
 
     public BudgetLimitModel addNew(BudgetLimitDto dto) {
         AccountModel account = accountRepository.findById(dto.getAccount().getId()).orElseThrow(() -> new EntityNotFoundException("No account founded."));
         BigDecimal budgetLimit = getLimitByAccountAndType(account.getId(), dto.getType()).getUpperLimit();
-        if(!budgetLimit.equals(BigDecimal.ZERO)){
+        if (!budgetLimit.equals(BigDecimal.ZERO)) {
             throw new BudgetLimitAlreadyExistException("Budget limit already exist.");
         }
         BudgetLimitModel newBudget = new BudgetLimitModel();
@@ -69,7 +68,7 @@ public class BudgetLimitService {
 
     public BudgetLimitModel getById(Long budgetId) {
         Optional<BudgetLimitModel> budgetOpt = budgetLimitRepository.findById(budgetId);
-        if(budgetOpt.isEmpty()){
+        if (budgetOpt.isEmpty()) {
             throw new EntityNotFoundException("Budget Limit not found.");
         }
         return budgetOpt.get();
@@ -80,7 +79,7 @@ public class BudgetLimitService {
         Optional<BudgetLimitModel> budgetTypeLimit = budgetList.stream()
                 .filter(b -> b.getType().equals(type))
                 .findFirst();
-        if(budgetTypeLimit.isEmpty()){
+        if (budgetTypeLimit.isEmpty()) {
             BudgetLimitModel limit = new BudgetLimitModel();
             limit.setUpperLimit(BigDecimal.ZERO);
             return limit;
@@ -91,10 +90,9 @@ public class BudgetLimitService {
 
     public void addTransactionToBudgetLimit(TransactionRequestDto transaction, BudgetLimitModel budgetLimit) {
         BigDecimal sum = budgetLimit.getUsedLimit().add(transaction.getAmount());
-        if(budgetLimit.getUpperLimit().compareTo(sum)<0){
+        if (budgetLimit.getUpperLimit().compareTo(sum) < 0) {
             throw new IncorrectBalanceValueException("The amount exceeds the budget limit");
-        }
-        else{
+        } else {
             budgetLimit.setUsedLimit(sum);
             budgetLimitRepository.save(budgetLimit);
         }

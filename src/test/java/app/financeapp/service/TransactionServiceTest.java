@@ -7,7 +7,6 @@ import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.enums.AccountType;
 import app.financeapp.model.enums.TransactionType;
-import app.financeapp.model.enums.TransactionsStatus;
 import app.financeapp.repository.TransactionRepository;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;

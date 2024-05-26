@@ -18,47 +18,50 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-    @Configuration
-    @EnableWebSecurity
-    @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-    public class SecurityConfig {
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+public class SecurityConfig {
 
-        @Bean
-        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(auth ->
-                            auth
-                                    .requestMatchers("/account/**").hasRole("USER")
-                                    .requestMatchers("/transactions/**").hasRole("USER")
-                                    .requestMatchers("/budget/**").hasRole("USER")
-                                    .requestMatchers("/login/**").permitAll()
-                                    .requestMatchers("/**").permitAll()
-                    ).httpBasic(Customizer.withDefaults());
-            return http.build();
-        }
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
-        @Bean
-        public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-            UserDetails user1 = User.builder()
-                    .username("AccountUser")
-                    .password(passwordEncoder.encode("pass")) // Kodowanie hasła
-                    .roles("USER")
-                    .build();
-            return new InMemoryUserDetailsManager(user1);
-        }
-
-        @Bean
-        public WebSecurityCustomizer webSecurityCustomizerH2() {
-            return (web) -> web.ignoring()
-                    .requestMatchers("/h2-console/**")
-                    .requestMatchers("/swagger-ui/**");
-        }
-        @Bean
-        AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-            return authenticationConfiguration.getAuthenticationManager();
-        }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers("/account/**").hasRole("USER")
+                                .requestMatchers("/transactions/**").hasRole("USER")
+                                .requestMatchers("/budget/**").hasRole("USER")
+                                .requestMatchers("/login/**").permitAll()
+                                .requestMatchers("/**").permitAll()
+                ).httpBasic(Customizer.withDefaults());
+        return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user1 = User.builder()
+                .username("AccountUser")
+                .password(passwordEncoder.encode("pass"))
+                .roles("USER")
+                .build();
+        return new InMemoryUserDetailsManager(user1);
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizerH2() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/h2-console/**")
+                .requestMatchers("/swagger-ui/**");
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+}
 

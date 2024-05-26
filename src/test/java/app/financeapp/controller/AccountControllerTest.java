@@ -9,7 +9,6 @@ import app.financeapp.model.enums.AccountType;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.service.AccountService;
 import app.financeapp.service.TransactionService;
-import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountControllerTest {

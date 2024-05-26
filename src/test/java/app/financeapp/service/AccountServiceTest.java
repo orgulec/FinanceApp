@@ -253,7 +253,6 @@ class AccountServiceTest {
     @Test
     void transferToDeposit_shouldThrowIncorrectBalanceValueExceptionWhenTooLessCashOnAccount() {
         //given
-        String ex = "Insufficient funds in the account.";
         AccountModel fromAccount = new AccountModel();
             fromAccount.setAccountNumber("123456789");
             fromAccount.setLogin("login");

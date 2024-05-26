@@ -17,10 +17,9 @@ public class BudgetLimitResponseDto {
 
 
     public String showStats() {
-        double percent = usedLimit.doubleValue()/(upperLimit.doubleValue())*1000d;
-        percent = Math.round(percent)/10d;
+        BigDecimal percent = usedLimit.divide(upperLimit).multiply(new BigDecimal(100));
         return title +
                 " (" + type + ") " +
-                " - Used limit: " + usedLimit.doubleValue() + " / " + upperLimit.doubleValue() + " (" + percent + "%)";
+                " - Used limit: " + usedLimit.doubleValue() + " / " + upperLimit.doubleValue() + " (" + percent.doubleValue() + "%)";
     }
 }

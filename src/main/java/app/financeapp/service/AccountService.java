@@ -16,6 +16,8 @@ import app.financeapp.utils.mappers.DepositMapper;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Data
@@ -39,12 +42,12 @@ public class AccountService {
     private final DepositMapper depositMapper;
     private final TransactionMapper transactionMapper;
 
-    public AccountRequestDto getByIdDto(Long id) {
+    public AccountRequestDto getByIdDto(@NotNull Long id) {
         AccountModel account = getById(id);
         return accountMapper.toReqDto(account);
     }
 
-    public AccountModel getById(Long id) {
+    public AccountModel getById(@NotNull Long id) {
         Optional<AccountModel> accountOpt = accountRepository.findById(id);
         if(accountOpt.isEmpty()){
             throw new EntityNotFoundException("No Account founded.");
@@ -52,7 +55,7 @@ public class AccountService {
         return accountOpt.get();
     }
 
-    public List<AccountRequestDto> getAllByUser(UserDto userDto) {
+    public List<AccountRequestDto> getAllByUser(@NotNull UserDto userDto) {
         List<AccountModel> accountsList = accountRepository.findAllByOwner_Id(userDto.getId());
         if(accountsList.isEmpty()){
             throw new EntityNotFoundException("No accounts founded.");
@@ -65,29 +68,27 @@ public class AccountService {
         return accountDto;
     }
 
-    public void subtractBalance(Long id, BigDecimal amount){
+    public void subtractBalance(@NotNull Long id, BigDecimal amount){
         AccountModel account = getById(id);
         if(account.getBalance().compareTo(amount)<0){
             throw new IncorrectBalanceValueException("Insufficient funds in the account.");
         }
-        BigDecimal newBalance = account.getBalance().subtract(amount);
-        account.setBalance(newBalance);
+        account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
     }
 
-    public void addBalance(Long id, BigDecimal amount){
+    public void addBalance(@NotNull Long id, BigDecimal amount){
         AccountModel account = getById(id);
-        BigDecimal newBalance = account.getBalance().add(amount);
-        account.setBalance(newBalance);
+        account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
     }
 
-    public AccountModel addNewAccountToUser(AccountNewDto newDto) {
+    public AccountModel addNewAccountToUser(@NotNull AccountNewDto newDto) {
         UserModel user = userService.getUserById(newDto.getOwner().getId());
         AccountModel newAccount = new AccountModel();
 
         newAccount.setOwner(user);
-        newAccount.setAccountNumber(generateAccountNumber());
+        newAccount.setAccountNumber(generateRandomAccountNumber());
         newAccount.setBalance(BigDecimal.ZERO);
         newAccount.setType(newDto.getType());
         newAccount.setLogin(newDto.getLogin());
@@ -96,8 +97,9 @@ public class AccountService {
     }
 
     @Transactional
-    public DepositModel addNewDepositToUser(DepositDto deposit) {
-        AccountModel account = accountRepository.findById(deposit.getAccountId()).orElseThrow(() -> new EntityNotFoundException("No account founded."));
+    public DepositModel addNewDepositToUser(@Valid DepositDto deposit) {
+        AccountModel account = accountRepository.findById(deposit.getAccountId())
+                .orElseThrow(() -> new EntityNotFoundException("No account founded."));
         DepositModel newDeposit = depositMapper.toModel(deposit);
         newDeposit.setAccount(account);
 
@@ -123,15 +125,14 @@ public class AccountService {
         transactionRepository.save(transaction);
     }
 
-    private String generateAccountNumber() {
-        //TODO
+    private String generateRandomAccountNumber() {
+
         StringBuilder number = new StringBuilder();
         for(int i = 0; i<26; i++){
-            double random = Math.random();
-            Long x = Math.min(9,Math.round(random*10));
+            int x = new Random().nextInt(9);
             number.append(x);
         }
-        return number.toString();//"12363214523678954400021458";
+        return number.toString();
     }
 
 }

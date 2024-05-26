@@ -32,7 +32,7 @@ public class TransactionService {
     public List<TransactionDto> getAllByAccountId(Long id) {
         AccountModel account = accountService.getById(id);
         List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account);
-        if(transactionsList.isEmpty()){
+        if (transactionsList.isEmpty()) {
             throw new EntityNotFoundException("No transactions founded.");
         }
         return mapToDtoAndCollectToList(transactionsList);
@@ -44,7 +44,7 @@ public class TransactionService {
                 .stream()
                 .filter(t -> t.getTransactionType().equals(TransactionType.valueOf(type)))
                 .toList();
-        if(transactionsList.isEmpty()){
+        if (transactionsList.isEmpty()) {
             throw new EntityNotFoundException("No transactions founded.");
         }
         return mapToDtoAndCollectToList(transactionsList);
@@ -59,7 +59,7 @@ public class TransactionService {
         checkIfTransactionAndAccountsAreCorrect(transaction, fromAccount, toAccount);
 
         BudgetLimitModel limit = budgetLimitService.getLimitByAccountAndType(fromAccount.getId(), transaction.getTransactionType());
-        if(!limit.getUpperLimit().equals(BigDecimal.ZERO)){
+        if (!limit.getUpperLimit().equals(BigDecimal.ZERO)) {
             budgetLimitService.addTransactionToBudgetLimit(transaction, limit);
         }
 
@@ -71,26 +71,26 @@ public class TransactionService {
     }
 
     private static void checkIfTransactionAndAccountsAreCorrect(TransactionRequestDto transaction, AccountModel fromAccount, AccountModel toAccount) {
-        if(fromAccount == null || toAccount == null){
+        if (fromAccount == null || toAccount == null) {
             throw new EntityNotFoundException("Check accounts data!");
         }
-        if(transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) < 0){
+        if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) < 0) {
             throw new IncorrectBalanceValueException("Incorrect amount value.");
         }
-        if(transaction.getAmount().compareTo(fromAccount.getBalance()) > 0){
+        if (transaction.getAmount().compareTo(fromAccount.getBalance()) > 0) {
             throw new IncorrectBalanceValueException("Insufficient funds in the account.");
         }
     }
 
     private static TransactionModel createTransactionFromDto(TransactionRequestDto transaction, AccountModel fromAccount, AccountModel toAccount) {
         TransactionModel newTransaction = new TransactionModel();
-        newTransaction.setTransactionType(transaction.getTransactionType());
-        newTransaction.setAmount(transaction.getAmount());
-        newTransaction.setFromAccount(fromAccount);
-        newTransaction.setToAccount(toAccount);
-        newTransaction.setTitle(transaction.getTitle());
-        newTransaction.setTransactionDate(ZonedDateTime.now());
-        newTransaction.setStatus(TransactionsStatus.WAITING);
+            newTransaction.setTransactionType(transaction.getTransactionType());
+            newTransaction.setAmount(transaction.getAmount());
+            newTransaction.setFromAccount(fromAccount);
+            newTransaction.setToAccount(toAccount);
+            newTransaction.setTitle(transaction.getTitle());
+            newTransaction.setTransactionDate(ZonedDateTime.now());
+            newTransaction.setStatus(TransactionsStatus.WAITING);
         return newTransaction;
     }
 

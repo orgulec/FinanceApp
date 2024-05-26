@@ -3,7 +3,6 @@ package app.financeapp.controller;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.repository.TransactionRepository;
 import app.financeapp.utils.exceptions.NoTransactionFoundException;
-import net.bytebuddy.description.type.TypeList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
