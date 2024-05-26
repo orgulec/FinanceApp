@@ -61,7 +61,6 @@ public class AccountService {
             throw new EntityNotFoundException("No accounts founded.");
         }
         List<AccountRequestDto> accountDto = new ArrayList<>();
-
         accountsList.forEach(
                 a -> accountDto.add(accountMapper.toReqDto(a))
         );
@@ -86,9 +85,12 @@ public class AccountService {
     public AccountModel addNewAccountToUser(@NotNull AccountNewDto newDto) {
         UserModel user = userService.getUserById(newDto.getOwner().getId());
         AccountModel newAccount = new AccountModel();
-
+        String newAccountNumber = generateRandomAccountNumber();
+        while(checkIfAccountNumberIsAvailable(newAccountNumber)){
+            newAccountNumber = generateRandomAccountNumber();
+        }
         newAccount.setOwner(user);
-        newAccount.setAccountNumber(generateRandomAccountNumber());
+        newAccount.setAccountNumber(newAccountNumber);
         newAccount.setBalance(BigDecimal.ZERO);
         newAccount.setType(newDto.getType());
         newAccount.setLogin(newDto.getLogin());
@@ -126,13 +128,16 @@ public class AccountService {
     }
 
     private String generateRandomAccountNumber() {
-
         StringBuilder number = new StringBuilder();
         for(int i = 0; i<26; i++){
             int x = new Random().nextInt(9);
             number.append(x);
         }
         return number.toString();
+    }
+    private boolean checkIfAccountNumberIsAvailable(String number){
+        Optional<AccountModel> byAccountNumber = accountRepository.findByAccountNumber(number);
+        return byAccountNumber.isPresent();
     }
 
 }
