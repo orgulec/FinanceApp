@@ -5,6 +5,7 @@ import app.financeapp.model.AccountModel;
 import app.financeapp.model.DepositModel;
 import app.financeapp.model.TransactionModel;
 import app.financeapp.model.UserModel;
+import app.financeapp.model.enums.ExceptionMsg;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.model.enums.TransactionsStatus;
 import app.financeapp.repository.AccountRepository;
@@ -50,7 +51,7 @@ public class AccountService {
     public AccountModel getById(@NotNull Long id) {
         Optional<AccountModel> accountOpt = accountRepository.findById(id);
         if(accountOpt.isEmpty()){
-            throw new EntityNotFoundException("No Account founded.");
+            throw new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString());
         }
         return accountOpt.get();
     }
@@ -58,7 +59,7 @@ public class AccountService {
     public List<AccountRequestDto> getAllByUser(@NotNull UserDto userDto) {
         List<AccountModel> accountsList = accountRepository.findAllByOwner_Id(userDto.getId());
         if(accountsList.isEmpty()){
-            throw new EntityNotFoundException("No accounts founded.");
+            throw new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString());
         }
         List<AccountRequestDto> accountDto = new ArrayList<>();
         accountsList.forEach(
@@ -70,7 +71,7 @@ public class AccountService {
     public void subtractBalance(@NotNull Long id, BigDecimal amount){
         AccountModel account = getById(id);
         if(account.getBalance().compareTo(amount)<0){
-            throw new IncorrectBalanceValueException("Insufficient funds in the account.");
+            throw new IncorrectBalanceValueException(ExceptionMsg.INSUFFICIENT_FUNDS_IN_ACCOUNT.toString());
         }
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
@@ -91,7 +92,7 @@ public class AccountService {
         }
         newAccount.setOwner(user);
         newAccount.setAccountNumber(newAccountNumber);
-        newAccount.setBalance(BigDecimal.ZERO);
+        newAccount.setBalance(BigDecimal.valueOf(0));
         newAccount.setType(newDto.getType());
         newAccount.setLogin(newDto.getLogin());
         newAccount.setPassword(newDto.getPassword());
@@ -101,7 +102,7 @@ public class AccountService {
     @Transactional
     public DepositModel addNewDepositToUser(@Valid DepositDto deposit) {
         AccountModel account = accountRepository.findById(deposit.getAccountId())
-                .orElseThrow(() -> new EntityNotFoundException("No account founded."));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString()));
         DepositModel newDeposit = depositMapper.toModel(deposit);
         newDeposit.setAccount(account);
 
@@ -111,7 +112,7 @@ public class AccountService {
 
     public void transferToDeposit(DepositModel newDeposit, AccountModel fromAccount) {
         if(fromAccount.getBalance().compareTo(newDeposit.getBalance())<0){
-            throw new IncorrectBalanceValueException("Insufficient funds in the account.");
+            throw new IncorrectBalanceValueException(ExceptionMsg.INSUFFICIENT_FUNDS_IN_ACCOUNT.toString());
         }
         String title = "Own deposit transfer.";
         TransactionModel transaction = new TransactionModel();

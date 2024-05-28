@@ -1,6 +1,7 @@
 package app.financeapp.service;
 
 import app.financeapp.model.UserModel;
+import app.financeapp.model.enums.ExceptionMsg;
 import app.financeapp.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class UserService {
     public UserModel getUserById(Long id){
         Optional<UserModel> user = userRepository.findById(id);
         if(user.isEmpty()){
-            throw new EntityNotFoundException("User not found.");
+            throw new EntityNotFoundException(ExceptionMsg.USER_NOT_FOUND.toString());
         }
         return user.get();
     }

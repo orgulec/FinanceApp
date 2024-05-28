@@ -37,6 +37,10 @@ Functionalities:
 
 http://localhost:8088/swagger-ui/index.html#
 
+Basic Auth:
+Login - AccountUser
+Password - pass
+
 PUT - /account/payment
 {
 "amount": 5000,

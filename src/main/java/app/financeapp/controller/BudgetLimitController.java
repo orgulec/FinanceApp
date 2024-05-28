@@ -30,16 +30,6 @@ public class BudgetLimitController {
     }
 
     /**
-     * Gets all budget statistics
-     * @param accountId id of the account
-     * @return Strings with statistics from BudgetLimitResponseDto with status 200
-     */
-    @GetMapping("/statistics/{accountId}")
-    public ResponseEntity<List<String>> getStatisticsByAccountId(@NotNull @PathVariable Long accountId){
-        return ResponseEntity.ok(budgetLimitService.getStatistics(accountId));
-    }
-
-    /**
      * Gets BudgetLimitModel by Id
      * @param budgetId id of the BudgetLimit
      * @return BudgetLimitModel with status 200
@@ -47,6 +37,16 @@ public class BudgetLimitController {
     @GetMapping("/byId/{budgetId}")
     public ResponseEntity<BudgetLimitModel> getBudgetById(@NotNull @PathVariable Long budgetId){
         return ResponseEntity.ok(budgetLimitService.getById(budgetId));
+    }
+
+    /**
+     * Gets all budget statistics
+     * @param accountId id of the account
+     * @return Strings with statistics from BudgetLimitResponseDto with status 200
+     */
+    @GetMapping("/statistics/{accountId}")
+    public ResponseEntity<List<String>> getStatisticsByAccountId(@NotNull @PathVariable Long accountId){
+        return ResponseEntity.ok(budgetLimitService.getStatistics(accountId));
     }
 
     /**

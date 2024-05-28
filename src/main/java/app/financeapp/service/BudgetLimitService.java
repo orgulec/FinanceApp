@@ -5,6 +5,7 @@ import app.financeapp.dto.BudgetLimitResponseDto;
 import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
 import app.financeapp.model.BudgetLimitModel;
+import app.financeapp.model.enums.ExceptionMsg;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.repository.AccountRepository;
 import app.financeapp.repository.BudgetLimitRepository;
@@ -29,7 +30,7 @@ public class BudgetLimitService {
     public List<BudgetLimitModel> getAll(Long accountId) {
         List<BudgetLimitModel> allBudgetLimitList = budgetLimitRepository.findAllByAccount_Id(accountId);
         if (allBudgetLimitList.isEmpty()) {
-            throw new EntityNotFoundException("No budget limit founded.");
+            throw new EntityNotFoundException(ExceptionMsg.NO_BUDGET_LIMIT_FOUNDED.toString());
         }
         return allBudgetLimitList;
     }
@@ -52,10 +53,11 @@ public class BudgetLimitService {
     }
 
     public BudgetLimitModel addNew(BudgetLimitDto dto) {
-        AccountModel account = accountRepository.findById(dto.getAccount().getId()).orElseThrow(() -> new EntityNotFoundException("No account founded."));
+        AccountModel account = accountRepository.findById(dto.getAccount().getId()).orElseThrow(
+                () -> new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString()));
         BigDecimal budgetLimit = getLimitByAccountAndType(account.getId(), dto.getType()).getUpperLimit();
         if (!budgetLimit.equals(BigDecimal.ZERO)) {
-            throw new BudgetLimitAlreadyExistException("Budget limit already exist.");
+            throw new BudgetLimitAlreadyExistException(ExceptionMsg.BUDGET_LIMIT_ALREADY_EXIST.toString());
         }
         BudgetLimitModel newBudget = new BudgetLimitModel();
             newBudget.setAccount(account);
@@ -69,7 +71,7 @@ public class BudgetLimitService {
     public BudgetLimitModel getById(Long budgetId) {
         Optional<BudgetLimitModel> budgetOpt = budgetLimitRepository.findById(budgetId);
         if (budgetOpt.isEmpty()) {
-            throw new EntityNotFoundException("Budget Limit not found.");
+            throw new EntityNotFoundException(ExceptionMsg.BUDGET_LIMIT_NOT_FOUND.toString());
         }
         return budgetOpt.get();
     }
@@ -91,7 +93,7 @@ public class BudgetLimitService {
     public void addTransactionToBudgetLimit(TransactionRequestDto transaction, BudgetLimitModel budgetLimit) {
         BigDecimal sum = budgetLimit.getUsedLimit().add(transaction.getAmount());
         if (budgetLimit.getUpperLimit().compareTo(sum) < 0) {
-            throw new IncorrectBalanceValueException("The amount exceeds the budget limit");
+            throw new IncorrectBalanceValueException(ExceptionMsg.AMOUNT_EXCEED_THE_BUDGET_LIMIT.toString());
         } else {
             budgetLimit.setUsedLimit(sum);
             budgetLimitRepository.save(budgetLimit);

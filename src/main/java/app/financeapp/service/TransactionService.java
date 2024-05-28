@@ -5,6 +5,7 @@ import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.model.AccountModel;
 import app.financeapp.model.BudgetLimitModel;
 import app.financeapp.model.TransactionModel;
+import app.financeapp.model.enums.ExceptionMsg;
 import app.financeapp.model.enums.TransactionType;
 import app.financeapp.model.enums.TransactionsStatus;
 import app.financeapp.repository.TransactionRepository;
@@ -16,6 +17,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class TransactionService {
         AccountModel account = accountService.getById(id);
         List<TransactionModel> transactionsList = transactionRepository.findAllByAccount(account);
         if (transactionsList.isEmpty()) {
-            throw new EntityNotFoundException("No transactions founded.");
+            throw new EntityNotFoundException(ExceptionMsg.NO_TRANSACTIONS_FOUNDED.toString());
         }
         return mapToDtoAndCollectToList(transactionsList);
     }
@@ -45,7 +47,7 @@ public class TransactionService {
                 .filter(t -> t.getTransactionType().equals(TransactionType.valueOf(type)))
                 .toList();
         if (transactionsList.isEmpty()) {
-            throw new EntityNotFoundException("No transactions founded.");
+            throw new EntityNotFoundException(ExceptionMsg.NO_TRANSACTIONS_FOUNDED.toString());
         }
         return mapToDtoAndCollectToList(transactionsList);
 
@@ -59,7 +61,7 @@ public class TransactionService {
         checkIfTransactionAndAccountsAreCorrect(transaction, fromAccount, toAccount);
 
         BudgetLimitModel limit = budgetLimitService.getLimitByAccountAndType(fromAccount.getId(), transaction.getTransactionType());
-        if (!limit.getUpperLimit().equals(BigDecimal.ZERO)) {
+        if (!limit.getUpperLimit().equals(BigDecimal.valueOf(0))) {
             budgetLimitService.addTransactionToBudgetLimit(transaction, limit);
         }
 
@@ -70,34 +72,41 @@ public class TransactionService {
         return transactionRepository.save(newTransaction);
     }
 
-    private static void checkIfTransactionAndAccountsAreCorrect(TransactionRequestDto transaction, AccountModel fromAccount, AccountModel toAccount) {
-        if (fromAccount == null || toAccount == null) {
-            throw new EntityNotFoundException("Check accounts data!");
-        }
-        if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IncorrectBalanceValueException("Incorrect amount value.");
-        }
-        if (transaction.getAmount().compareTo(fromAccount.getBalance()) > 0) {
-            throw new IncorrectBalanceValueException("Insufficient funds in the account.");
-        }
-    }
-
     private static TransactionModel createTransactionFromDto(TransactionRequestDto transaction, AccountModel fromAccount, AccountModel toAccount) {
+        ZonedDateTime currentDate = ZonedDateTime.now();
         TransactionModel newTransaction = new TransactionModel();
             newTransaction.setTransactionType(transaction.getTransactionType());
             newTransaction.setAmount(transaction.getAmount());
             newTransaction.setFromAccount(fromAccount);
             newTransaction.setToAccount(toAccount);
             newTransaction.setTitle(transaction.getTitle());
-            newTransaction.setTransactionDate(ZonedDateTime.now());
-            newTransaction.setStatus(TransactionsStatus.WAITING);
+            newTransaction.setTransactionDate(currentDate);
+            newTransaction.setStatus(
+                    checkIfCurrentDayIsWorkDay(currentDate) ? TransactionsStatus.ACCEPTED : TransactionsStatus.WAITING);
         return newTransaction;
+    }
+
+    private static void checkIfTransactionAndAccountsAreCorrect(TransactionRequestDto transaction, AccountModel fromAccount, AccountModel toAccount) {
+        if (fromAccount == null || toAccount == null) {
+            throw new EntityNotFoundException(ExceptionMsg.CHECK_ACCOUNTS_DATA.toString());
+        }
+        if (transaction.getAmount() == null || transaction.getAmount().compareTo(BigDecimal.valueOf(0)) < 0) {
+            throw new IncorrectBalanceValueException(ExceptionMsg.INCORRECT_AMOUNT_VALUE.toString());
+        }
+        if (transaction.getAmount().compareTo(fromAccount.getBalance()) > 0) {
+            throw new IncorrectBalanceValueException(ExceptionMsg.INSUFFICIENT_FUNDS_IN_ACCOUNT.toString());
+        }
     }
 
     private List<TransactionDto> mapToDtoAndCollectToList(List<TransactionModel> transactionsList) {
         return transactionsList.stream()
                 .map(transactionMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private static boolean checkIfCurrentDayIsWorkDay(ZonedDateTime date){
+        DayOfWeek currentDay = date.getDayOfWeek();
+        return (!currentDay.equals(DayOfWeek.SATURDAY) && !currentDay.equals(DayOfWeek.SUNDAY));
     }
 
 }

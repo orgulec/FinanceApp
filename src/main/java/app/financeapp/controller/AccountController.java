@@ -64,7 +64,7 @@ public class AccountController {
      */
     @Operation(summary = "Gets all Transactions by account Id and TransactionType", description = "Returns List of TransactionDtos and status 200")
     @GetMapping("/history")
-    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@NotNull @RequestParam(name = "id") Long id, @NotNull @RequestParam(name = "type") String type){
+    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@NotNull @RequestParam(name = "id") Long id, @RequestParam(name = "type") String type){
         return ResponseEntity.ok(transactionService.getAllByAccountIdAndType(id, type));
     }
 
