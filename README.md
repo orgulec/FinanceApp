@@ -1,12 +1,14 @@
-Design task:
+### Design task:
 Application for managing personal finances
+<hr>
 
-Objective:
+### Objective:
 The goal of the project is a REST application that enables users
 personal finance management. The application will allow you to track your income,
 expenses, budget planning, and financial analysis.
+<hr>
 
-Functionalities:
+### Functionalities:
 
 1. Financial account management:
 
@@ -35,20 +37,20 @@ Functionalities:
 <hr>
 <b>SWAGGER:</b>
 
-http://localhost:8088/swagger-ui/index.html#
+<url>http://localhost:8088/swagger-ui/index.html#</url>
 
 Basic Auth:
-Login - AccountUser
-Password - pass
+Login - <i>AccountUser</i>
+Password - <i>pass</i>
 
-PUT - /account/payment
+<code>PUT - /account/payment
 {
 "amount": 5000,
 "fromAccount": {"id": 1 },
 "toAccount": {"id": 2 },
 "transactionType": "ENTERTAINMENT",
 "title": "Płatność"
-}
+}</code>
 
 POST - /account/newAccount
 {
