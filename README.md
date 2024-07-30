@@ -39,12 +39,13 @@ expenses, budget planning, and financial analysis.
 
 <url>http://localhost:8088/swagger-ui/index.html#</url>
 
-Basic Auth:
+### Basic Auth:
 Login - <i>AccountUser</i>
+
 Password - <i>pass</i>
 
-<code>PUT - /account/payment
-{
+PUT - /account/payment
+<code>{
 "amount": 5000,
 "fromAccount": {"id": 1 },
 "toAccount": {"id": 2 },
@@ -53,37 +54,37 @@ Password - <i>pass</i>
 }</code>
 
 POST - /account/newAccount
-{
+<code>{
 "owner": {"id": 1 },
 "type": "DEBIT",
 "amount": 0,
 "login": "jankos",
 "password": "password"
-}
+}</code>
 
 POST - /account/newDeposit
-{
+<code>{
 "accountId": 1,
 "balance": 2500,
 "plannedEndDate": "2025-03-26T01:02:27.8793178+01:00"
-}
+}</code>
 
 POST - /budget/newBudgetLimit
-{
+<code>{
 "account":{
 "id": 1
 },
 "type": "HEALTH",
 "limit": 6000,
 "title": "Zdrowie"
-}
+}</code>
 
 GET - /account/userAccounts
-{
+<code>{
 "id": 1,
 "firstName": "Janek",
 "lastName": "Kos"
-}
+}</code>
 
 GET - /account/1
 
