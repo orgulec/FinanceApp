@@ -1,12 +1,12 @@
-package app.financeapp.controller;
+package app.financeapp.account;
 
-import app.financeapp.account.*;
-import app.financeapp.dto.*;
 import app.financeapp.deposit.DepositModel;
-import app.financeapp.transaction.TransactionModel;
-import app.financeapp.user.UserModel;
-import app.financeapp.transaction.TransactionType;
+import app.financeapp.dto.AccountNewDto;
+import app.financeapp.dto.AccountRequestDto;
+import app.financeapp.dto.DepositDto;
+import app.financeapp.dto.UserDto;
 import app.financeapp.transaction.TransactionService;
+import app.financeapp.user.UserModel;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +28,9 @@ import static org.mockito.Mockito.when;
 class AccountControllerTest {
 
     @Mock
-    private AccountService accountService;
-    @Mock
     private TransactionService transactionService;
+    @Mock
+    private AccountService accountService;
     @InjectMocks
     private AccountController accountController;
 
@@ -82,64 +82,6 @@ class AccountControllerTest {
         );
     }
 
-    @Test
-    void getAllTransactionsByAccountId_shouldReturnListOfTransactionDtoWithStatus200() {
-        //given
-        Long id = 1L;
-        TransactionDto transactionDto = new TransactionDto();
-        ArrayList<TransactionDto> transactionList = new ArrayList<>();
-            transactionList.add(transactionDto);
-        //when
-        when(transactionService.getAllByAccountId(id)).thenReturn(transactionList);
-
-        //then
-        ResponseEntity<List<TransactionDto>> result = accountController.getAllTransactionsByAccountId(id);
-        assertAll(
-                ()->assertEquals(HttpStatus.OK, result.getStatusCode()),
-                ()->assertEquals(ResponseEntity.ok(transactionList), result),
-                ()->assertEquals(transactionList,result.getBody()),
-                ()->assertEquals(transactionList.size(),result.getBody().size())
-        );
-    }
-
-    @Test
-    void getAllTransactionsByAccountIdAndType_shouldReturnListOfTransactionDtoWithStatus200() {
-        //given
-        Long id = 1L;
-        String type = "INCOME";
-        TransactionDto transactionDto = new TransactionDto();
-            transactionDto.setTransactionType(TransactionType.OTHERS);
-        List<TransactionDto> transactionList = new ArrayList<>();
-            transactionList.add(transactionDto);
-        //when
-        when(transactionService.getAllByAccountIdAndType(id, type)).thenReturn(transactionList);
-
-        //then
-        ResponseEntity<List<TransactionDto>> result = accountController.getAllTransactionsByAccountIdAndType(id, type);
-        assertAll(
-                ()->assertEquals(HttpStatus.OK, result.getStatusCode()),
-                ()->assertEquals(ResponseEntity.ok(transactionList), result),
-                ()->assertEquals(transactionList,result.getBody()),
-                ()->assertEquals(transactionList.size(),result.getBody().size())
-        );
-    }
-
-    @Test
-    void makeTransaction_shouldReturnTransactionModelWithStatus202() {
-        //given
-        TransactionRequestDto transactionDto = new TransactionRequestDto();
-        TransactionModel transaction = new TransactionModel();
-
-        //when
-        when(transactionService.makeTransfer(transactionDto)).thenReturn(transaction);
-
-        //then
-        ResponseEntity<TransactionModel> result = accountController.makeTransaction(transactionDto);
-        assertAll(
-                ()->assertEquals(HttpStatus.ACCEPTED, result.getStatusCode()),
-                ()->assertEquals(transaction, result.getBody())
-        );
-    }
 
     @Test
     void createNewAccountForUser_shouldReturnNewAccountModelWithStatus201() {
@@ -177,7 +119,7 @@ class AccountControllerTest {
             deposit.setBalance(balance);
 
         //when
-        when(accountService.addNewDepositToUser(depositDto)).thenReturn(deposit);
+        when(transactionService.addNewDepositToUser(depositDto)).thenReturn(deposit);
 
         //then
         ResponseEntity<DepositModel> result = accountController.createNewDepositForUser(depositDto);

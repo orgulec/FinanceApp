@@ -1,12 +1,12 @@
 package app.financeapp.budget;
 
+import app.financeapp.account.AccountModel;
+import app.financeapp.account.AccountRepository;
 import app.financeapp.dto.BudgetLimitDto;
 import app.financeapp.dto.BudgetLimitResponseDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.account.AccountModel;
-import app.financeapp.utils.enums.ExceptionMsg;
 import app.financeapp.transaction.TransactionType;
-import app.financeapp.account.AccountRepository;
+import app.financeapp.utils.enums.ExceptionMsg;
 import app.financeapp.utils.exceptions.BudgetLimitAlreadyExistException;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +31,10 @@ public class BudgetLimitService {
             throw new EntityNotFoundException(ExceptionMsg.NO_BUDGET_LIMIT_FOUNDED.toString());
         }
         return allBudgetLimitList;
+    }
+
+    public BudgetLimitModel saveBudget(BudgetLimitModel newBugdet){
+        return budgetLimitRepository.save(newBugdet);
     }
 
     public String showStatistics(BudgetLimitModel model) {

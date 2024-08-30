@@ -1,16 +1,17 @@
-package app.financeapp.service;
+package app.financeapp.transaction;
 
+import app.financeapp.account.AccountModel;
 import app.financeapp.account.AccountService;
+import app.financeapp.account.AccountType;
+import app.financeapp.budget.BudgetLimitModel;
 import app.financeapp.budget.BudgetLimitService;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.deposit.DepositService;
+import app.financeapp.dto.DepositDto;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.account.AccountModel;
-import app.financeapp.budget.BudgetLimitModel;
-import app.financeapp.transaction.TransactionModel;
-import app.financeapp.account.AccountType;
-import app.financeapp.transaction.TransactionService;
-import app.financeapp.transaction.TransactionType;
-import app.financeapp.transaction.TransactionRepository;
+import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
+import app.financeapp.utils.mappers.DepositMapper;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,16 +32,20 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceTest {
-@Mock
-private TransactionRepository transactionRepository;
-@Mock
-private AccountService accountService;
-@Mock
-private TransactionMapper transactionMapper;
-@Mock
-private BudgetLimitService budgetLimitService;
-@InjectMocks
-private TransactionService transactionService;
+    @Mock
+    private TransactionRepository transactionRepository;
+    @Mock
+    private AccountService accountService;
+    @Mock
+    private BudgetLimitService budgetLimitService;
+    @Mock
+    private DepositService depositService;
+    @Mock
+    private TransactionMapper transactionMapper;
+    @Mock
+    private DepositMapper depositMapper;
+    @InjectMocks
+    private TransactionService transactionService;
 
     @Test
     void getAllByAccountId_shouldReturnTransactionDtoList() {
@@ -61,7 +67,7 @@ private TransactionService transactionService;
         //when
         when(accountService.getById(id)).thenReturn(account);
         when(transactionRepository.findAllByAccount(account)).thenReturn(transactionList);
-        when(transactionMapper.toDto(transaction)).thenCallRealMethod();
+        when(transactionMapper.toDto(any(TransactionModel.class))).thenCallRealMethod();
         //then
         List<TransactionDto> result = transactionService.getAllByAccountId(id);
         assertAll(
@@ -81,10 +87,9 @@ private TransactionService transactionService;
             account.setPassword("pass");
             account.setBalance(new BigDecimal(100));
             account.setType(AccountType.CASH);
-        List<TransactionModel> transactionList = new ArrayList<>();
         //when
         when(accountService.getById(id)).thenReturn(account);
-        when(transactionRepository.findAllByAccount(account)).thenReturn(transactionList);
+        when(transactionRepository.findAllByAccount(account)).thenThrow(new EntityNotFoundException());
         //then
         assertThrows(EntityNotFoundException.class, ()->transactionService.getAllByAccountId(id));
     }
@@ -111,7 +116,7 @@ private TransactionService transactionService;
         //when
         when(accountService.getById(id)).thenReturn(account);
         when(transactionRepository.findAllByAccount(account)).thenReturn(transactionList);
-        when(transactionMapper.toDto(transaction)).thenCallRealMethod();
+        when(transactionMapper.toDto(any(TransactionModel.class))).thenCallRealMethod();
         //then
         List<TransactionDto> result = transactionService.getAllByAccountIdAndType(id, type);
         assertAll(
@@ -151,7 +156,7 @@ private TransactionService transactionService;
         when(budgetLimitService.getLimitByAccountAndType(fromAccount.getId(),TransactionType.OTHERS)).thenReturn(budget);
         doNothing().when(accountService).subtractBalance(fromAccount.getId(), transactionDto.getAmount());
         doNothing().when(accountService).addBalance(toAccount.getId(), transactionDto.getAmount());
-        when(transactionRepository.save(any(TransactionModel.class))).thenReturn(newTransaction);
+        when(transactionService.saveTransaction(any(TransactionModel.class))).thenReturn(newTransaction);
 
         //then
         TransactionModel result = transactionService.makeTransfer(transactionDto);
@@ -160,5 +165,74 @@ private TransactionService transactionService;
                 ()->assertNotNull(result),
                 ()->assertEquals(newTransaction.getTitle(), result.getTitle())
         );
+    }
+
+    @Test
+    void addNewDepositToUser_shouldReturnNewDepositModel() {
+        //given
+        AccountModel account =  new AccountModel();
+        account.setBalance(new BigDecimal(10));
+        DepositDto depositDto = new DepositDto();
+        depositDto.setAccountId(account.getId());
+        depositDto.setBalance(new BigDecimal(0));
+        depositDto.setPlannedEndDate(ZonedDateTime.now());
+        DepositModel newDeposit = new DepositModel();
+        newDeposit.setAccount(account);
+        newDeposit.setBalance(new BigDecimal(0));
+        newDeposit.setPlannedEndDate(ZonedDateTime.now());
+        //when
+        when(accountService.getById(depositDto.getAccountId())).thenReturn(account);
+        when(depositMapper.toModel(depositDto)).thenReturn(newDeposit);
+        when(depositService.saveDeposit(newDeposit)).thenReturn(newDeposit);
+        //then
+        DepositModel result = transactionService.addNewDepositToUser(depositDto);
+        assertAll(
+                ()->assertNotNull(result),
+                ()->assertEquals(newDeposit.getAccount(), result.getAccount()),
+                ()->assertEquals(newDeposit.getBalance(), result.getBalance())
+        );
+    }
+
+    @Test
+    void transferToDeposit_shouldSaveNewTransaction() {
+        //given
+        AccountModel fromAccount = new AccountModel();
+        fromAccount.setAccountNumber("123456789");
+        fromAccount.setLogin("login");
+        fromAccount.setPassword("pass");
+        fromAccount.setBalance(new BigDecimal(100));
+        fromAccount.setType(AccountType.CASH);
+        DepositModel newDeposit = new DepositModel();
+        newDeposit.setBalance(new BigDecimal(50));
+        newDeposit.setCreationDate(ZonedDateTime.now());
+        newDeposit.setPlannedEndDate(ZonedDateTime.now());
+        TransactionModel transaction = new TransactionModel();
+        transaction.setToAccount(fromAccount);
+        transaction.setTransactionDate(ZonedDateTime.now());
+        //when
+        when(transactionRepository.save(any(TransactionModel.class))).thenReturn(transaction);
+        //then
+        transactionService.transferToDeposit(newDeposit, fromAccount);
+        verify(transactionRepository).save(any(TransactionModel.class));
+    }
+    @Test
+    void transferToDeposit_shouldThrowIncorrectBalanceValueExceptionWhenTooLessCashOnAccount() {
+        //given
+        AccountModel fromAccount = new AccountModel();
+        fromAccount.setAccountNumber("123456789");
+        fromAccount.setLogin("login");
+        fromAccount.setPassword("pass");
+        fromAccount.setBalance(new BigDecimal(0));
+        fromAccount.setType(AccountType.CASH);
+        DepositModel newDeposit = new DepositModel();
+        newDeposit.setBalance(new BigDecimal(50));
+        newDeposit.setCreationDate(ZonedDateTime.now());
+        newDeposit.setPlannedEndDate(ZonedDateTime.now());
+
+        //when
+        //then
+        assertThrows(IncorrectBalanceValueException.class,
+                () -> transactionService.transferToDeposit(newDeposit, fromAccount));
+        verify(transactionRepository, never()).save(any(TransactionModel.class));
     }
 }

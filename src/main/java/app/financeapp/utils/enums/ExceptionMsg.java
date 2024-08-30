@@ -15,4 +15,5 @@ public enum ExceptionMsg {
     ExceptionMsg(String s) {
     }
 
+
 }

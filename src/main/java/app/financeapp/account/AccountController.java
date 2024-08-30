@@ -1,8 +1,10 @@
 package app.financeapp.account;
 
-import app.financeapp.dto.*;
 import app.financeapp.deposit.DepositModel;
-import app.financeapp.transaction.TransactionModel;
+import app.financeapp.dto.AccountNewDto;
+import app.financeapp.dto.AccountRequestDto;
+import app.financeapp.dto.DepositDto;
+import app.financeapp.dto.UserDto;
 import app.financeapp.transaction.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/account")
 public class AccountController {
+
     private final AccountService accountService;
     private final TransactionService transactionService;
 
@@ -44,40 +47,6 @@ public class AccountController {
     }
 
     /**
-     * Gets all Transactions by account Id
-     * @param id id of the Account
-     * @return List of TransactionDtos and status 200
-     */
-    @Operation(summary = "Gets all Transactions by account Id", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/history/{id}")
-    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountId(@PathVariable @NotNull Long id){
-        return ResponseEntity.ok(transactionService.getAllByAccountId(id));
-    }
-
-    /**
-     * Gets all Transactions by account Id and TransactionType
-     * @param id id of the Account
-     * @param type Type of Transaction
-     * @return List of TransactionDtos and status 200
-     */
-    @Operation(summary = "Gets all Transactions by account Id and TransactionType", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/history")
-    public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@NotNull @RequestParam(name = "id") Long id, @RequestParam(name = "type") String type){
-        return ResponseEntity.ok(transactionService.getAllByAccountIdAndType(id, type));
-    }
-
-    /**
-     * Make the new transaction between two accounts
-     * @param transaction data required to make transaction between 2 accounts
-     * @return new TransactionModel with status 202
-     */
-    @Operation(summary = "Make the new transaction between two accounts", description = "Returns new TransactionModel with status 202")
-    @PutMapping("/payment")
-    public ResponseEntity<TransactionModel> makeTransaction(@Valid @RequestBody TransactionRequestDto transaction){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(transactionService.makeTransfer(transaction));
-    }
-
-    /**
      * Creates a new account
      * @param newAccount Data to create new account
      * @return New AccountModel with status 201
@@ -96,7 +65,7 @@ public class AccountController {
     @Operation(summary = "Creates a new deposit on the user account", description = "Returns new DepositModel with status 201")
     @PostMapping("/newDeposit")
     public ResponseEntity<DepositModel> createNewDepositForUser(@Valid @RequestBody DepositDto deposit){
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addNewDepositToUser(deposit));
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.addNewDepositToUser(deposit));
     }
 
 }

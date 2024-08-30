@@ -1,7 +1,7 @@
 package app.financeapp;
 
 import app.financeapp.account.AccountRepository;
-import app.financeapp.budget.BudgetLimitRepository;
+import app.financeapp.budget.BudgetLimitService;
 import app.financeapp.user.UserDataRepository;
 import app.financeapp.user.UserRepository;
 import app.financeapp.utils.initservice.InitService;
@@ -28,9 +28,9 @@ public class FinanceAppApplication {
             UserRepository userRepository,
             UserDataRepository userDataRepository,
             AccountRepository accountRepository,
-            BudgetLimitRepository budgetLimitRepository){
+            BudgetLimitService budgetLimitService){
         return args -> {
-            InitService initService = new InitService(userRepository,userDataRepository,accountRepository,budgetLimitRepository);
+            InitService initService = new InitService(userRepository,userDataRepository,accountRepository,budgetLimitService);
             initService.generateStartRecordsToDatabase();
         };
     }

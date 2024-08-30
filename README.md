@@ -42,7 +42,7 @@ http://localhost:8088/swagger-ui/index.html#
 * Password - pass
 <hr>
 
-* PUT - /account/payment
+* PUT - /payment
 {
 "amount": 5000,
 "fromAccount": {"id": 1 },
@@ -86,9 +86,9 @@ http://localhost:8088/swagger-ui/index.html#
 
 * GET - /account/1
 
-* GET - /account/history/1
+* GET - /transactions/1
 
-* GET - /account/history?id=1&type=ENTERTAINMENT
+* GET - /transactions?id=1&type=ENTERTAINMENT
 
 * GET - /transactions/all
 

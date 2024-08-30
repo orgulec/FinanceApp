@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TransactionRepository  extends JpaRepository<TransactionModel, Long> {
+interface TransactionRepository  extends JpaRepository<TransactionModel, Long> {
 
     @Query(value = "SELECT t FROM TransactionModel t WHERE t.toAccount = :account OR t.fromAccount = :account ")
     List<TransactionModel> findAllByAccount(AccountModel account);

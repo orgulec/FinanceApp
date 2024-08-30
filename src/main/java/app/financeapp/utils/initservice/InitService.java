@@ -4,7 +4,7 @@ import app.financeapp.account.AccountModel;
 import app.financeapp.account.AccountRepository;
 import app.financeapp.account.AccountType;
 import app.financeapp.budget.BudgetLimitModel;
-import app.financeapp.budget.BudgetLimitRepository;
+import app.financeapp.budget.BudgetLimitService;
 import app.financeapp.transaction.TransactionType;
 import app.financeapp.user.UserData;
 import app.financeapp.user.UserDataRepository;
@@ -28,16 +28,16 @@ public class InitService {
     private UserRepository userRepository;
     private UserDataRepository userDataRepository;
     private AccountRepository accountRepository;
-    private BudgetLimitRepository budgetLimitRepository;
+    private BudgetLimitService budgetLimitService;
 
     public InitService(UserRepository userRepository,
                        UserDataRepository userDataRepository,
                        AccountRepository accountRepository,
-                       BudgetLimitRepository budgetLimitRepository) {
+                       BudgetLimitService budgetLimitService) {
         this.userRepository = userRepository;
         this.userDataRepository = userDataRepository;
         this.accountRepository = accountRepository;
-        this.budgetLimitRepository = budgetLimitRepository;
+        this.budgetLimitService = budgetLimitService;
     }
 
     public void generateStartRecordsToDatabase() {
@@ -57,7 +57,9 @@ public class InitService {
         BudgetLimitModel budget1 = new BudgetLimitModel(1L, account1, "Rozrywka", TransactionType.ENTERTAINMENT, new BigDecimal(7500), new BigDecimal(2000));
         BudgetLimitModel budget2 = new BudgetLimitModel(2L, account1, "Zakupy", TransactionType.SHOPPING, new BigDecimal(3000), new BigDecimal(2500));
         BudgetLimitModel budget3 = new BudgetLimitModel(3L, account1, "Oszczędności", TransactionType.SAVINGS, new BigDecimal(8000), new BigDecimal(2500));
-        budgetLimitRepository.saveAll(List.of(budget1, budget2, budget3));
+        budgetLimitService.saveBudget(budget1);
+        budgetLimitService.saveBudget(budget2);
+        budgetLimitService.saveBudget(budget3);
     }
 
 }

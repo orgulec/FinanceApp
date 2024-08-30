@@ -1,46 +1,33 @@
 package app.financeapp.account;
 
-import app.financeapp.dto.*;
-import app.financeapp.deposit.DepositModel;
-import app.financeapp.transaction.TransactionModel;
+import app.financeapp.dto.AccountNewDto;
+import app.financeapp.dto.AccountRequestDto;
+import app.financeapp.dto.UserDto;
 import app.financeapp.user.UserModel;
-import app.financeapp.utils.enums.ExceptionMsg;
-import app.financeapp.transaction.TransactionType;
-import app.financeapp.transaction.TransactionsStatus;
-import app.financeapp.deposit.DepositRepository;
-import app.financeapp.transaction.TransactionRepository;
 import app.financeapp.user.UserService;
+import app.financeapp.utils.enums.ExceptionMsg;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.AccountMapper;
-import app.financeapp.utils.mappers.DepositMapper;
-import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Data
 @Primary
 public class AccountService {
+
     private final AccountRepository accountRepository;
-    private final DepositRepository depositRepository;
-    private final TransactionRepository transactionRepository;
-
     private final UserService userService;
-
     private final AccountMapper accountMapper;
-    private final DepositMapper depositMapper;
-    private final TransactionMapper transactionMapper;
 
     public AccountRequestDto getByIdDto(@NotNull Long id) {
         AccountModel account = getById(id);
@@ -60,11 +47,9 @@ public class AccountService {
         if(accountsList.isEmpty()){
             throw new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString());
         }
-        List<AccountRequestDto> accountDto = new ArrayList<>();
-        accountsList.forEach(
-                a -> accountDto.add(accountMapper.toReqDto(a))
-        );
-        return accountDto;
+        return accountsList.stream().map(
+                accountMapper::toReqDto)
+                .collect(Collectors.toList());
     }
 
     public void subtractBalance(@NotNull Long id, BigDecimal amount){
@@ -98,35 +83,6 @@ public class AccountService {
         return accountRepository.save(newAccount);
     }
 
-    @Transactional
-    public DepositModel addNewDepositToUser(@Valid DepositDto deposit) {
-        AccountModel account = accountRepository.findById(deposit.getAccountId())
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMsg.NO_ACCOUNT_FOUNDED.toString()));
-        DepositModel newDeposit = depositMapper.toModel(deposit);
-        newDeposit.setAccount(account);
-
-        transferToDeposit(newDeposit, account);
-        return depositRepository.save(newDeposit);
-    }
-
-    public void transferToDeposit(DepositModel newDeposit, AccountModel fromAccount) {
-        if(fromAccount.getBalance().compareTo(newDeposit.getBalance())<0){
-            throw new IncorrectBalanceValueException(ExceptionMsg.INSUFFICIENT_FUNDS_IN_ACCOUNT.toString());
-        }
-        String title = "Own deposit transfer.";
-        TransactionModel transaction = new TransactionModel();
-
-        transaction.setTransactionType(TransactionType.SAVINGS);
-        transaction.setTitle(title);
-        transaction.setFromAccount(fromAccount);
-        transaction.setToAccount(fromAccount);
-        transaction.setAmount(newDeposit.getBalance());
-        transaction.setStatus(TransactionsStatus.ACCEPTED);
-
-        subtractBalance(fromAccount.getId(), newDeposit.getBalance());
-        transactionRepository.save(transaction);
-    }
-
     private String generateRandomAccountNumber() {
         StringBuilder number = new StringBuilder();
         for(int i = 0; i<26; i++){
@@ -135,6 +91,7 @@ public class AccountService {
         }
         return number.toString();
     }
+
     private boolean checkIfAccountNumberIsAvailable(String number){
         Optional<AccountModel> byAccountNumber = accountRepository.findByAccountNumber(number);
         return byAccountNumber.isPresent();

@@ -1,19 +1,12 @@
-package app.financeapp.service;
+package app.financeapp.account;
 
-import app.financeapp.account.*;
 import app.financeapp.dto.AccountNewDto;
 import app.financeapp.dto.AccountRequestDto;
-import app.financeapp.dto.DepositDto;
 import app.financeapp.dto.UserDto;
-import app.financeapp.deposit.DepositModel;
-import app.financeapp.transaction.TransactionModel;
 import app.financeapp.user.UserModel;
-import app.financeapp.deposit.DepositRepository;
-import app.financeapp.transaction.TransactionRepository;
 import app.financeapp.user.UserService;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.AccountMapper;
-import app.financeapp.utils.mappers.DepositMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +29,9 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
     @Mock
-    private DepositRepository depositRepository;
-    @Mock
     private UserService userService;
     @Mock
-    private TransactionRepository transactionRepository;
-    @Mock
     private AccountMapper accountMapper;
-    @Mock
-    private DepositMapper depositMapper;
     @InjectMocks
     private AccountService accountService;
 
@@ -200,73 +186,4 @@ class AccountServiceTest {
         );
     }
 
-    @Test
-    void addNewDepositToUser_shouldReturnNewDepositModel() {
-        //given
-        AccountModel account =  new AccountModel();
-            account.setBalance(new BigDecimal(10));
-        DepositDto depositDto = new DepositDto();
-            depositDto.setAccountId(account.getId());
-            depositDto.setBalance(new BigDecimal(0));
-            depositDto.setPlannedEndDate(ZonedDateTime.now());
-        DepositModel newDeposit = new DepositModel();
-            newDeposit.setAccount(account);
-            newDeposit.setBalance(new BigDecimal(0));
-            newDeposit.setPlannedEndDate(ZonedDateTime.now());
-        //when
-        when(accountRepository.findById(depositDto.getAccountId())).thenReturn(Optional.of(account));
-        when(depositMapper.toModel(depositDto)).thenReturn(newDeposit);
-        when(depositRepository.save(newDeposit)).thenReturn(newDeposit);
-        //then
-        DepositModel result = accountService.addNewDepositToUser(depositDto);
-        assertAll(
-                ()->assertNotNull(result),
-                ()->assertEquals(newDeposit.getAccount(), result.getAccount()),
-                ()->assertEquals(newDeposit.getBalance(), result.getBalance())
-        );
-    }
-
-    @Test
-    void transferToDeposit_shouldSaveNewTransaction() {
-        //given
-        AccountModel fromAccount = new AccountModel();
-            fromAccount.setAccountNumber("123456789");
-            fromAccount.setLogin("login");
-            fromAccount.setPassword("pass");
-            fromAccount.setBalance(new BigDecimal(100));
-            fromAccount.setType(AccountType.CASH);
-        DepositModel newDeposit = new DepositModel();
-            newDeposit.setBalance(new BigDecimal(50));
-            newDeposit.setCreationDate(ZonedDateTime.now());
-            newDeposit.setPlannedEndDate(ZonedDateTime.now());
-        TransactionModel transaction = new TransactionModel();
-            transaction.setToAccount(fromAccount);
-            transaction.setTransactionDate(ZonedDateTime.now());
-        //when
-        when(accountRepository.findById(fromAccount.getId())).thenReturn(Optional.of(fromAccount));
-        when(transactionRepository.save(any(TransactionModel.class))).thenReturn(transaction);
-        //then
-        accountService.transferToDeposit(newDeposit, fromAccount);
-        verify(transactionRepository).save(any(TransactionModel.class));
-    }
-    @Test
-    void transferToDeposit_shouldThrowIncorrectBalanceValueExceptionWhenTooLessCashOnAccount() {
-        //given
-        AccountModel fromAccount = new AccountModel();
-            fromAccount.setAccountNumber("123456789");
-            fromAccount.setLogin("login");
-            fromAccount.setPassword("pass");
-            fromAccount.setBalance(new BigDecimal(0));
-            fromAccount.setType(AccountType.CASH);
-        DepositModel newDeposit = new DepositModel();
-            newDeposit.setBalance(new BigDecimal(50));
-            newDeposit.setCreationDate(ZonedDateTime.now());
-            newDeposit.setPlannedEndDate(ZonedDateTime.now());
-
-        //when
-        //then
-        assertThrows(IncorrectBalanceValueException.class,
-            () -> accountService.transferToDeposit(newDeposit, fromAccount));
-        verify(transactionRepository, never()).save(any(TransactionModel.class));
-    }
 }
