@@ -1,4 +1,4 @@
-Design task:
+### Design task:
 Application for managing personal finances
 
 Objective:
@@ -6,7 +6,7 @@ The goal of the project is a REST application that enables users
 personal finance management. The application will allow you to track your income,
 expenses, budget planning, and financial analysis.
 
-Functionalities:
+### Functionalities:
 
 1. Financial account management:
 
@@ -37,11 +37,12 @@ Functionalities:
 
 http://localhost:8088/swagger-ui/index.html#
 
-Basic Auth:
-Login - AccountUser
-Password - pass
+### Basic Auth:
+* Login - AccountUser 
+* Password - pass
+<hr>
 
-PUT - /account/payment
+* PUT - /account/payment
 {
 "amount": 5000,
 "fromAccount": {"id": 1 },
@@ -50,7 +51,7 @@ PUT - /account/payment
 "title": "Płatność"
 }
 
-POST - /account/newAccount
+* POST - /account/newAccount
 {
 "owner": {"id": 1 },
 "type": "DEBIT",
@@ -59,14 +60,14 @@ POST - /account/newAccount
 "password": "password"
 }
 
-POST - /account/newDeposit
+* POST - /account/newDeposit
 {
 "accountId": 1,
 "balance": 2500,
 "plannedEndDate": "2025-03-26T01:02:27.8793178+01:00"
 }
 
-POST - /budget/newBudgetLimit
+* POST - /budget/newBudgetLimit
 {
 "account":{
 "id": 1
@@ -76,23 +77,23 @@ POST - /budget/newBudgetLimit
 "title": "Zdrowie"
 }
 
-GET - /account/userAccounts
+* GET - /account/userAccounts
 {
 "id": 1,
 "firstName": "Janek",
 "lastName": "Kos"
 }
 
-GET - /account/1
+* GET - /account/1
 
-GET - /account/history/1
+* GET - /account/history/1
 
-GET - /account/history?id=1&type=ENTERTAINMENT
+* GET - /account/history?id=1&type=ENTERTAINMENT
 
-GET - /transactions/all
+* GET - /transactions/all
 
-GET - /budget/byAccount/1
+* GET - /budget/byAccount/1
 
-GET - /budget/statistics/1
+* GET - /budget/statistics/1
 
 <hr>

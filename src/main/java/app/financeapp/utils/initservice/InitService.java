@@ -1,18 +1,17 @@
 package app.financeapp.utils.initservice;
 
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.BudgetLimitModel;
-import app.financeapp.model.UserData;
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.AccountType;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.repository.AccountRepository;
-import app.financeapp.repository.BudgetLimitRepository;
-import app.financeapp.repository.UserDataRepository;
-import app.financeapp.repository.UserRepository;
+import app.financeapp.account.AccountModel;
+import app.financeapp.account.AccountRepository;
+import app.financeapp.account.AccountType;
+import app.financeapp.budget.BudgetLimitModel;
+import app.financeapp.budget.BudgetLimitRepository;
+import app.financeapp.transaction.TransactionType;
+import app.financeapp.user.UserData;
+import app.financeapp.user.UserDataRepository;
+import app.financeapp.user.UserModel;
+import app.financeapp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,15 +22,18 @@ import java.util.List;
 /**
  * This class is used only to create first records to database repository for tests
  */
-@Service
+@Component
 @RequiredArgsConstructor
 public class InitService {
-    UserRepository userRepository;
-    UserDataRepository userDataRepository;
-    AccountRepository accountRepository;
-    BudgetLimitRepository budgetLimitRepository;
+    private UserRepository userRepository;
+    private UserDataRepository userDataRepository;
+    private AccountRepository accountRepository;
+    private BudgetLimitRepository budgetLimitRepository;
 
-    public InitService(UserRepository userRepository, UserDataRepository userDataRepository, AccountRepository accountRepository, BudgetLimitRepository budgetLimitRepository) {
+    public InitService(UserRepository userRepository,
+                       UserDataRepository userDataRepository,
+                       AccountRepository accountRepository,
+                       BudgetLimitRepository budgetLimitRepository) {
         this.userRepository = userRepository;
         this.userDataRepository = userDataRepository;
         this.accountRepository = accountRepository;

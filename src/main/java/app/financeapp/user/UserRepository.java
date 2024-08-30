@@ -1,6 +1,5 @@
-package app.financeapp.repository;
+package app.financeapp.user;
 
-import app.financeapp.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserModel, Long> {

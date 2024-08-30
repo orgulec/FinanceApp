@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 .requestMatchers("/transactions/**").hasRole("USER")
                                 .requestMatchers("/budget/**").hasRole("USER")
                                 .requestMatchers("/login/**").permitAll()
+                                .requestMatchers("/index/**").permitAll()
                                 .requestMatchers("/**").permitAll()
                 ).httpBasic(Customizer.withDefaults());
         return http.build();

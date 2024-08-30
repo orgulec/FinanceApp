@@ -1,4 +1,4 @@
-package app.financeapp.model.enums;
+package app.financeapp.utils.enums;
 
 public enum ExceptionMsg {
     NO_TRANSACTIONS_FOUNDED("No transaction founded!"),

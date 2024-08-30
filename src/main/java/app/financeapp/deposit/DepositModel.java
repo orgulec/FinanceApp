@@ -1,5 +1,6 @@
-package app.financeapp.model;
+package app.financeapp.deposit;
 
+import app.financeapp.account.AccountModel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;

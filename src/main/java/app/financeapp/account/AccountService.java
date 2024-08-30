@@ -1,16 +1,15 @@
-package app.financeapp.service;
+package app.financeapp.account;
 
 import app.financeapp.dto.*;
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.DepositModel;
-import app.financeapp.model.TransactionModel;
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.ExceptionMsg;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.model.enums.TransactionsStatus;
-import app.financeapp.repository.AccountRepository;
-import app.financeapp.repository.DepositRepository;
-import app.financeapp.repository.TransactionRepository;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.transaction.TransactionModel;
+import app.financeapp.user.UserModel;
+import app.financeapp.utils.enums.ExceptionMsg;
+import app.financeapp.transaction.TransactionType;
+import app.financeapp.transaction.TransactionsStatus;
+import app.financeapp.deposit.DepositRepository;
+import app.financeapp.transaction.TransactionRepository;
+import app.financeapp.user.UserService;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.AccountMapper;
 import app.financeapp.utils.mappers.DepositMapper;

@@ -1,11 +1,9 @@
-package app.financeapp.controller;
+package app.financeapp.account;
 
 import app.financeapp.dto.*;
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.DepositModel;
-import app.financeapp.model.TransactionModel;
-import app.financeapp.service.AccountService;
-import app.financeapp.service.TransactionService;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.transaction.TransactionModel;
+import app.financeapp.transaction.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

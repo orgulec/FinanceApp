@@ -1,13 +1,16 @@
 package app.financeapp.service;
 
+import app.financeapp.account.AccountService;
+import app.financeapp.budget.BudgetLimitService;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.BudgetLimitModel;
-import app.financeapp.model.TransactionModel;
-import app.financeapp.model.enums.AccountType;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.repository.TransactionRepository;
+import app.financeapp.account.AccountModel;
+import app.financeapp.budget.BudgetLimitModel;
+import app.financeapp.transaction.TransactionModel;
+import app.financeapp.account.AccountType;
+import app.financeapp.transaction.TransactionService;
+import app.financeapp.transaction.TransactionType;
+import app.financeapp.transaction.TransactionRepository;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;

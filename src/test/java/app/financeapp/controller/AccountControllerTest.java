@@ -1,14 +1,12 @@
 package app.financeapp.controller;
 
+import app.financeapp.account.*;
 import app.financeapp.dto.*;
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.DepositModel;
-import app.financeapp.model.TransactionModel;
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.AccountType;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.service.AccountService;
-import app.financeapp.service.TransactionService;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.transaction.TransactionModel;
+import app.financeapp.user.UserModel;
+import app.financeapp.transaction.TransactionType;
+import app.financeapp.transaction.TransactionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,7 @@
 package app.financeapp.dto;
 
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.enums.TransactionType;
+import app.financeapp.account.AccountModel;
+import app.financeapp.transaction.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;

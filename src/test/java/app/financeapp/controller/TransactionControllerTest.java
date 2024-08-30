@@ -1,7 +1,8 @@
 package app.financeapp.controller;
 
-import app.financeapp.model.TransactionModel;
-import app.financeapp.repository.TransactionRepository;
+import app.financeapp.transaction.TransactionController;
+import app.financeapp.transaction.TransactionModel;
+import app.financeapp.transaction.TransactionRepository;
 import app.financeapp.utils.exceptions.NoTransactionFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

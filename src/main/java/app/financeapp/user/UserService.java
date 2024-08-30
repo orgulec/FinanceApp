@@ -1,12 +1,8 @@
-package app.financeapp.service;
+package app.financeapp.user;
 
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.ExceptionMsg;
-import app.financeapp.repository.UserRepository;
+import app.financeapp.utils.enums.ExceptionMsg;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +10,7 @@ import java.util.Optional;
 @Service
 @Data
 public class UserService {
+
     private final UserRepository userRepository;
 
     public UserModel getUserById(Long id){

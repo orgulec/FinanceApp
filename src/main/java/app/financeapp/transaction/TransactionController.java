@@ -1,7 +1,5 @@
-package app.financeapp.controller;
+package app.financeapp.transaction;
 
-import app.financeapp.model.TransactionModel;
-import app.financeapp.repository.TransactionRepository;
 import app.financeapp.utils.exceptions.NoTransactionFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

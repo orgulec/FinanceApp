@@ -1,4 +1,4 @@
-package app.financeapp.model;
+package app.financeapp.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

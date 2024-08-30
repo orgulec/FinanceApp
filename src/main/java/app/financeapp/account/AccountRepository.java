@@ -1,6 +1,5 @@
-package app.financeapp.repository;
+package app.financeapp.account;
 
-import app.financeapp.model.AccountModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

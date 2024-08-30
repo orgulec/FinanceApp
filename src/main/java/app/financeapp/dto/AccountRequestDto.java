@@ -1,8 +1,8 @@
 package app.financeapp.dto;
 
-import app.financeapp.model.DepositModel;
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.AccountType;
+import app.financeapp.account.AccountType;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.user.UserModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

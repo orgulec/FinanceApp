@@ -1,7 +1,7 @@
 package app.financeapp.dto;
 
-import app.financeapp.model.UserModel;
-import app.financeapp.model.enums.AccountType;
+import app.financeapp.account.AccountType;
+import app.financeapp.user.UserModel;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;

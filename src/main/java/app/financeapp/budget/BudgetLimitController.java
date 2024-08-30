@@ -1,8 +1,6 @@
-package app.financeapp.controller;
+package app.financeapp.budget;
 
 import app.financeapp.dto.BudgetLimitDto;
-import app.financeapp.model.BudgetLimitModel;
-import app.financeapp.service.BudgetLimitService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

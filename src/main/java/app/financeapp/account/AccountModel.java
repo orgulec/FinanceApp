@@ -1,6 +1,7 @@
-package app.financeapp.model;
+package app.financeapp.account;
 
-import app.financeapp.model.enums.AccountType;
+import app.financeapp.deposit.DepositModel;
+import app.financeapp.user.UserModel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;

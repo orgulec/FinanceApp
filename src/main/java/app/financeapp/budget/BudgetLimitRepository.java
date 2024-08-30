@@ -1,6 +1,5 @@
-package app.financeapp.repository;
+package app.financeapp.budget;
 
-import app.financeapp.model.BudgetLimitModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

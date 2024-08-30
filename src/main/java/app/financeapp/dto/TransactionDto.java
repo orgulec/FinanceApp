@@ -1,8 +1,8 @@
 package app.financeapp.dto;
 
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.model.enums.TransactionsStatus;
+import app.financeapp.account.AccountModel;
+import app.financeapp.transaction.TransactionType;
+import app.financeapp.transaction.TransactionsStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

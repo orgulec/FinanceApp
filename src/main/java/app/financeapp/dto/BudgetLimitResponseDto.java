@@ -1,6 +1,6 @@
 package app.financeapp.dto;
 
-import app.financeapp.model.enums.TransactionType;
+import app.financeapp.transaction.TransactionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

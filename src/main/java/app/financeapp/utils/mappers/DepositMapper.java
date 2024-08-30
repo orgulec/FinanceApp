@@ -1,7 +1,7 @@
 package app.financeapp.utils.mappers;
 
 import app.financeapp.dto.DepositDto;
-import app.financeapp.model.DepositModel;
+import app.financeapp.deposit.DepositModel;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

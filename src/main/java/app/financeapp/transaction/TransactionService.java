@@ -1,14 +1,12 @@
-package app.financeapp.service;
+package app.financeapp.transaction;
 
+import app.financeapp.account.AccountService;
+import app.financeapp.budget.BudgetLimitService;
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.model.AccountModel;
-import app.financeapp.model.BudgetLimitModel;
-import app.financeapp.model.TransactionModel;
-import app.financeapp.model.enums.ExceptionMsg;
-import app.financeapp.model.enums.TransactionType;
-import app.financeapp.model.enums.TransactionsStatus;
-import app.financeapp.repository.TransactionRepository;
+import app.financeapp.account.AccountModel;
+import app.financeapp.budget.BudgetLimitModel;
+import app.financeapp.utils.enums.ExceptionMsg;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
