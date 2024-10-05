@@ -34,7 +34,7 @@ public class BudgetLimitModel {
     @Column(name = "UPPER_LIMIT", nullable = false)
     private BigDecimal upperLimit;
 
-    @Column(name = "USED_LIMIT", nullable = false)
+    @Column(name = "USED_LIMIT")
     private BigDecimal usedLimit;
 
 }

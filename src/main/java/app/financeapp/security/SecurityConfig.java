@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity//(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -28,14 +28,22 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/account/**").hasRole("USER")
-                                .requestMatchers("/transactions/**").hasRole("USER")
-                                .requestMatchers("/budget/**").hasRole("USER")
                                 .requestMatchers("/login/**").permitAll()
-                                .requestMatchers("/index/**").permitAll()
-                                .requestMatchers("/**").permitAll()
-                ).httpBasic(Customizer.withDefaults());
+//                                .requestMatchers("/accounts/**").hasRole("USER")
+//                                .requestMatchers("/transactions/**").hasRole("USER")
+//                                .requestMatchers("/budget/**").hasRole("USER")
+//                                .requestMatchers("/**").permitAll()
+                                .anyRequest().authenticated()
+                ).formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizerH2() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/h2-console/**")
+                .requestMatchers("/swagger-ui/**");
     }
 
     @Bean
@@ -51,13 +59,6 @@ public class SecurityConfig {
                 .roles("USER")
                 .build();
         return new InMemoryUserDetailsManager(user1);
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizerH2() {
-        return (web) -> web.ignoring()
-                .requestMatchers("/h2-console/**")
-                .requestMatchers("/swagger-ui/**");
     }
 
     @Bean

@@ -2,7 +2,7 @@ package app.financeapp.transaction;
 
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.utils.exceptions.NoTransactionFoundException;
+import app.financeapp.utils.exceptions.TransactionsNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,10 +47,10 @@ class TransactionControllerTest {
         //given
         String ex = "No transactions founded.";
         //when
-        when(transactionService.getAll()).thenThrow(new NoTransactionFoundException(ex));
+        when(transactionService.getAll()).thenThrow(new TransactionsNotFoundException(ex));
 
         //then
-        assertThrows(NoTransactionFoundException.class, ()->transactionController.getAll());
+        assertThrows(TransactionsNotFoundException.class, ()->transactionController.getAll());
     }
 
 

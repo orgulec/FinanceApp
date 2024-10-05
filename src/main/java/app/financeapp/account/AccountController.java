@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/account")
+@RequestMapping("/accounts")
 public class AccountController {
 
     private final AccountService accountService;
@@ -41,7 +41,7 @@ public class AccountController {
      * @return List of AccountDtos and status 200
      */
     @Operation(summary = "Gets all accounts belonging to the user", description = "Returns List of AccountDtos and status 200")
-    @GetMapping("/userAccounts")
+    @GetMapping("/")
     public ResponseEntity<List<AccountRequestDto>> getAllByUser(@Valid @RequestBody UserDto user){
         return ResponseEntity.ok(accountService.getAllByUser(user));
     }
@@ -52,7 +52,7 @@ public class AccountController {
      * @return New AccountModel with status 201
      */
     @Operation(summary = "Creates a new account", description = "Returns new AccountModel with status 201")
-    @PostMapping("/newAccount")
+    @PostMapping("/account")
     public ResponseEntity<AccountModel> createNewAccountForUser(@Valid @RequestBody AccountNewDto newAccount){
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addNewAccountToUser(newAccount));
     }
@@ -63,7 +63,7 @@ public class AccountController {
      * @return New DepositModel with status 201
      */
     @Operation(summary = "Creates a new deposit on the user account", description = "Returns new DepositModel with status 201")
-    @PostMapping("/newDeposit")
+    @PostMapping("/deposit")
     public ResponseEntity<DepositModel> createNewDepositForUser(@Valid @RequestBody DepositDto deposit){
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.addNewDepositToUser(deposit));
     }

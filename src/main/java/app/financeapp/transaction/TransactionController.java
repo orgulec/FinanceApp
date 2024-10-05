@@ -2,7 +2,7 @@ package app.financeapp.transaction;
 
 import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
-import app.financeapp.utils.exceptions.NoTransactionFoundException;
+import app.financeapp.utils.exceptions.TransactionsNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/transactions")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -24,11 +24,11 @@ public class TransactionController {
      * Retrieves all transactions from DB
      * @return List of transactions wrapped in dto
      */
-    @GetMapping("/transactions/all")
+    @GetMapping("/all")
     public ResponseEntity<List<TransactionDto>> getAll(){
         List<TransactionDto> transactionsList = transactionService.getAll();
         if(transactionsList.isEmpty()){
-            throw new NoTransactionFoundException("No transactions founded.");
+            throw new TransactionsNotFoundException("No transactions founded.");
         }
         return ResponseEntity.ok(transactionsList);
     }
@@ -40,7 +40,7 @@ public class TransactionController {
      * @return List of TransactionDtos and status 200
      */
     @Operation(summary = "Gets all Transactions by account Id", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/transactions/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountId(@PathVariable @NotNull Long id){
         return ResponseEntity.ok(transactionService.getAllByAccountId(id));
     }
@@ -52,7 +52,7 @@ public class TransactionController {
      * @return List of TransactionDtos and status 200
      */
     @Operation(summary = "Gets all Transactions by account Id and TransactionType", description = "Returns List of TransactionDtos and status 200")
-    @GetMapping("/transactions")
+    @GetMapping("/")
     public ResponseEntity<List<TransactionDto>> getAllTransactionsByAccountIdAndType(@NotNull @RequestParam(name = "id") Long id, @RequestParam(name = "type") String type){
         return ResponseEntity.ok(transactionService.getAllByAccountIdAndType(id, type));
     }

@@ -42,7 +42,7 @@ http://localhost:8088/swagger-ui/index.html#
 * Password - pass
 <hr>
 
-* PUT - /payment
+* PUT - /transactions/payment
 {
 "amount": 5000,
 "fromAccount": {"id": 1 },
@@ -51,7 +51,7 @@ http://localhost:8088/swagger-ui/index.html#
 "title": "Płatność"
 }
 
-* POST - /account/newAccount
+* POST - /accounts/account
 {
 "owner": {"id": 1 },
 "type": "DEBIT",
@@ -60,14 +60,14 @@ http://localhost:8088/swagger-ui/index.html#
 "password": "password"
 }
 
-* POST - /account/newDeposit
+* POST - /account/deposit
 {
 "accountId": 1,
 "balance": 2500,
 "plannedEndDate": "2025-03-26T01:02:27.8793178+01:00"
 }
 
-* POST - /budget/newBudgetLimit
+* POST - /budget/
 {
 "account":{
 "id": 1
@@ -77,20 +77,22 @@ http://localhost:8088/swagger-ui/index.html#
 "title": "Zdrowie"
 }
 
-* GET - /account/userAccounts
+* GET - /accounts/
 {
 "id": 1,
 "firstName": "Janek",
 "lastName": "Kos"
 }
 
-* GET - /account/1
+* GET - /accounts/1
 
 * GET - /transactions/1
 
 * GET - /transactions?id=1&type=ENTERTAINMENT
 
 * GET - /transactions/all
+
+* GET - /transactions/
 
 * GET - /budget/byAccount/1
 

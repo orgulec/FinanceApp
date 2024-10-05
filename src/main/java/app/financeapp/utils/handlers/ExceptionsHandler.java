@@ -1,8 +1,6 @@
 package app.financeapp.utils.handlers;
 
-import app.financeapp.utils.exceptions.BudgetLimitAlreadyExistException;
-import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
-import app.financeapp.utils.exceptions.NoTransactionFoundException;
+import app.financeapp.utils.exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +18,16 @@ public class ExceptionsHandler {
     public ResponseEntity<String> entityNotFoundExceptionHandler(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    @ExceptionHandler(NoTransactionFoundException.class)
-    public ResponseEntity<String> noTransactionFoundedExceptionHandler(NoTransactionFoundException ex){
+    @ExceptionHandler(BudgetNotFoundException.class)
+    public ResponseEntity<String> budgetNotFoundExceptionHandler(BudgetNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<String> accountNotFoundExceptionHandler(AccountNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(TransactionsNotFoundException.class)
+    public ResponseEntity<String> transactionsNotFoundExceptionHandler(TransactionsNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
     @ExceptionHandler(BudgetLimitAlreadyExistException.class)

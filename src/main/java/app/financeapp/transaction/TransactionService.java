@@ -11,7 +11,7 @@ import app.financeapp.dto.TransactionDto;
 import app.financeapp.dto.TransactionRequestDto;
 import app.financeapp.utils.enums.ExceptionMsg;
 import app.financeapp.utils.exceptions.IncorrectBalanceValueException;
-import app.financeapp.utils.exceptions.NoTransactionFoundException;
+import app.financeapp.utils.exceptions.TransactionsNotFoundException;
 import app.financeapp.utils.mappers.DepositMapper;
 import app.financeapp.utils.mappers.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,7 +46,7 @@ public class TransactionService {
     public List<TransactionDto> getAll(){
         List<TransactionModel> transactions = transactionRepository.findAll();
         if(transactions.isEmpty()) {
-            throw new NoTransactionFoundException(ExceptionMsg.NO_TRANSACTIONS_FOUNDED.toString());
+            throw new TransactionsNotFoundException(ExceptionMsg.NO_TRANSACTIONS_FOUNDED.toString());
         }
         return transactions.stream()
                 .map(transactionMapper::toDto)

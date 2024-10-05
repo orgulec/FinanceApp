@@ -1,6 +1,8 @@
 package app.financeapp.dto;
 
 import app.financeapp.transaction.TransactionType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,9 +13,13 @@ import java.math.RoundingMode;
 @NoArgsConstructor
 public class BudgetLimitResponseDto {
 
+    @NotBlank
     private String title;
+    @NotNull
     private TransactionType type;
+    @NotNull
     private BigDecimal upperLimit;
+    @NotNull
     private BigDecimal usedLimit;
 
 

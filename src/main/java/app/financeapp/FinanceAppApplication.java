@@ -23,7 +23,7 @@ public class FinanceAppApplication {
     /*
      * Creates first entities into DB for tests
      */
-    @Bean
+//    @Bean
     public CommandLineRunner commandLineRunner(
             UserRepository userRepository,
             UserDataRepository userDataRepository,
